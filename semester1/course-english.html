@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English - RKSC</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="../favico/favicon.ico">
+    <link rel="manifest" href="../favico/site.webmanifest">
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="../index.html" class="logo">
+                    <i class="fas fa-shield-alt" id="shield-logo"></i>
+                    <h1>RKSC</h1>
+                </a>
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <div class="course-header">
+                <div class="course-info">
+                    <button class="back-button" onclick="window.location.href='index.html'">
+                        <i class="fas fa-arrow-left"></i>
+                        Kembali
+                    </button>
+                    <h1 class="course-page-title">English</h1>
+                    <p class="course-subtitle">Semester 1</p>
+                </div>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <button class="tab-button active" data-tab="overview">Overview</button>
+                <button class="tab-button" data-tab="teori">Teori</button>
+                <button class="tab-button" data-tab="praktikum">Praktikum</button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Overview Tab -->
+                <div class="tab-panel active" id="overview">
+                    <!-- Content will be loaded by JS -->
+                </div>
+
+                <!-- Teori Tab -->
+                <div class="tab-panel" id="teori">
+                    <div class="search-container">
+                        <div class="search-box">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" id="teori-search" placeholder="Cari materi teori..." class="search-input">
+                        </div>
+                    </div>
+                    <div class="materials-grid">
+                        <!-- Teori materials will be loaded by JS -->
+                    </div>
+                </div>
+
+                <!-- Praktikum Tab -->
+                <div class="tab-panel" id="praktikum">
+                    <div class="search-container" style="margin-bottom: var(--spacing-xl);">
+                        <div class="search-box">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" id="praktikum-search" placeholder="Cari materi praktikum..." class="search-input">
+                        </div>
+                    </div>
+                    <div class="materials-grid">
+                        <!-- Praktikum materials will be loaded by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-text"><span id="motd-footer"></span><br>© 2025 RKSC.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="../js/scripts.js"></script>
+</body>
+</html>

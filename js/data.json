@@ -1,0 +1,308 @@
+[
+  {
+    "semester": 1,
+    "folder": "semester1",
+    "courses": [
+      {
+        "name": "ALPRO",
+        "url": "course-algoritma-pemrograman.html",
+        "overview": "apakanlah itu biar ga apa kali.",
+        "materials": [
+          {
+            "title": "Praktikum 1",
+            "type": "Praktikum",
+            "driveId": "1rdH5yH96iDCv4ONV37-hJOyNu-BBNK2_",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "Praktikum 2",
+            "type": "Praktikum",
+            "driveId": "10sHqXX147oWJthMyhCID68FywmuyQ-vp",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "Praktikum 5",
+            "type": "Praktikum",
+            "driveId": "10Jm2UuEQVNRW7e44T4AEZe1A5gXxApMu",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "Praktikum 6",
+            "type": "Praktikum",
+            "driveId": "1Bgm_VnZ2ImNsw-flekrYTHta6CfTbE5G",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "[2] DESKRIPSI ALGORITMA DAN PEMROGRAMAN",
+            "type": "Teori",
+            "driveId": "1AeWfdl4Z4-zJoN6Y30qfNtFWFbDwCzmX",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "[3] PENYAJIAN ALGORITMA FLOWCHART",
+            "type": "Teori",
+            "driveId": "14CtFHT5ylgQbI_HWTbfFx-QrR4ZSCsu_",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "[4] SELECTION",
+            "type": "Teori",
+            "driveId": "1ZGPZX3xqLv0hy8hFEuwk5IXBX3NnFDYo",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "[6] SELEKSI BERTINGKAT",
+            "type": "Teori",
+            "driveId": "1lK5CsGP-4gJVcgqoUq_wdMjCVsDJQBrj",
+            "uploadDate": "13 Oktober 2025"
+          }
+        ]
+      },
+      {
+        "name": "ARSIKOM",
+        "url": "course-arsitektur-komputer.html",
+        "overview": "ini apa ya",
+        "materials": [
+          {
+            "title": "01. Konsep Dasar dan Evolusi Komputer",
+            "type": "Teori",
+            "driveId": "1S0JuZmNvWhSoh78oRBOiwVpghVWPQIwA",
+            "uploadDate": "13 Oktober 2025"
+          },          
+          {
+            "title": "ITE8_Chp1",
+            "type": "Teori",
+            "driveId": "10HPLAKKImf3vurw42AmRMsFGEs6AAgjF",
+            "uploadDate": "13 Oktober 2025"
+          },          
+          {
+            "title": "ITE8_Chp2",
+            "type": "Teori",
+            "driveId": "1xKKH6PuAcda92AS9f-rU17p3RJWyqraw",
+            "uploadDate": "13 Oktober 2025"
+          },          
+          {
+            "title": "ITE8_Chp10",
+            "type": "Teori",
+            "driveId": "1ftAGoGqqf5TtZAvVLSNpPJztT3-CasEf",
+            "uploadDate": "13 Oktober 2025"
+          },          
+          {
+            "title": "ITE8_Chp11",
+            "type": "Teori",
+            "driveId": "1nvJ3NCIAv-28Od_5FQRZ3tCWJ_65K9-l",
+            "uploadDate": "13 Oktober 2025"
+          },          
+          {
+            "title": "ITE8_Chp12",
+            "type": "Teori",
+            "driveId": "1y4EHMYlCOCYkBvnyvT5uUsPwwtQp9OJP",
+            "uploadDate": "13 Oktober 2025"
+          }, 
+          {
+            "title": "Jobsheet 1 - Arsikom",
+            "type": "Praktikum",
+            "driveId": "15dENDbIIXRGkBVikBtE4Lgfo_ApAanEu",
+            "uploadDate": "13 Oktober 2025"
+          }
+        ]
+      },
+      {
+        "name": "English",
+        "url": "course-english.html",
+        "overview": "see you when i see you",
+        "materials": [
+        ]
+      },
+      {
+        "name": "Kalkulus",
+        "url": "course-kalkulus.html",
+        "overview": "kapan terakhir kali kamu tertidur tenang",
+        "materials": [
+          {
+            "title": "Kuliah 02 Persamaan dan Pertidaksamaan",
+            "type": "Teori",
+            "driveId": "1ST_LH9ZQLMt8hameGbFx7fMi9OlsxXFd",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "Kuliah 05 Matriks",
+            "type": "Teori",
+            "driveId": "1nUvfYyPTaJkVtY_YalAHnBNNqt31oKMR",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "Kuliah 06 Matriks (OBE)",
+            "type": "Teori",
+            "driveId": "1by2LY_EHFFu6EtabEqQ5rKuiJf7uTFPM",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "Kuliah 07 Determinan",
+            "type": "Teori",
+            "driveId": "1eTWFrXDaeE02uiI138ONVK4J-T9ItTF3",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "Kuliah 08 Minor dan Kofaktor",
+            "type": "Teori",
+            "driveId": "1Ca0W2arlvXimpvcDdm1zrurW9E9yIE_4",
+            "uploadDate": "13 Oktober 2025"
+          }
+        ]
+      },
+      {
+        "name": "PTIL",
+        "url": "course-ptil.html",
+        "overview": "SELECT * RKS1C",
+        "materials": [
+          {
+            "title": "test PTIL (Teori)",
+            "type": "Teori",
+            "driveId": "YOUR_DRIVE_ID_HERE",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "test PTIL (Praktikum)",
+            "type": "Praktikum",
+            "driveId": "YOUR_DRIVE_ID_HERE",
+            "uploadDate": "13 Oktober 2025"
+          }
+        ]
+      },
+      {
+        "name": "Sistem Digital",
+        "url": "course-sistem-digital.html",
+        "overview": "apa hukumnya gerbang OR diganti gerbang kos-kosan",
+        "materials": [
+          {
+            "title": "Modul Praktikum - 1",
+            "type": "Praktikum",
+            "driveId": "191_jVhmh21AJRcQ3UT4IX9fxy0OAqfOc",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "Modul Praktikum - 2",
+            "type": "Praktikum",
+            "driveId": "1F3HmTBbYLCiapKOWl9wPjamibHBuNQzB",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "Pertemuan 1 - Sistem Digital",
+            "type": "Teori",
+            "driveId": "1mB2VL7KGhGJAgL0TXh5bRiHZzL1cKxYv",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "Sistem Bilangan",
+            "type": "Teori",
+            "driveId": "1m5sN2ewHrKVf6UTcfuCInjVF-IY6PQgQ",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "Modul Praktikum Sistem Digital - 3",
+            "type": "Praktikum",
+            "driveId": "13TVdyJYQl8clBa6KA3cLf0aLqjHotOar",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "MBCD, BCH, dan ASCII",
+            "type": "Teori",
+            "driveId": "1-iQUmqWCEzL02Nqmqw_Xz9D5QPC_8taT",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "Modul Praktikum Sistem Digital - 5",
+            "type": "Praktikum",
+            "driveId": "1LWThZCudgysaAWtGh7_xAGhUQVsr7DkG",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "Modul Pertemuan 6 Aljabar Boolean",
+            "type": "Praktikum",
+            "driveId": "1LcylRUhWKLT8cemIWApCHjgxJqT6hzs7",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "Pertemuan 6 - Aljabar Boolean",
+            "type": "Teori",
+            "driveId": "1Mv-aQNUKQT2E7X8g6SitwQy4wGQWtQwI",
+            "uploadDate": "13 Oktober 2025"
+          }
+        ]
+      },
+      {
+        "name": "Sistem Operasi",
+        "url": "course-sistem-operasi.html",
+        "overview": "Mata kuliah ini membahas konsep dasar dan fungsi sistem operasi komputer, termasuk manajemen proses, memori, dan sistem file.",
+        "materials": [
+          {
+            "title": "Mata kuliah ini membahas konsep dasar dan fungsi sistem operasi komputer, termasuk manajemen proses, memori, dan sistem file.",
+            "type": "Teori",
+            "driveId": "YOUR_DRIVE_ID_HERE_1",
+            "uploadDate": "12 Oktober 2025"
+          },
+          {
+            "title": "Manajemen Proses & Thread",
+            "type": "Teori",
+            "driveId": "YOUR_DRIVE_ID_HERE_2",
+            "uploadDate": "12 Oktober 2025"
+          },
+          {
+            "title": "Praktikum 1: Instalasi Linux dalam kehidupan sehari hari yang tak pernah dibah ubasdjaslfkdasjdlajd",
+            "type": "Praktikum",
+            "driveId": "YOUR_DRIVE_ID_HERE_3",
+            "uploadDate": "12 Oktober 2025"
+          },
+          {
+            "title": "test Sistem Operasi (Teori)",
+            "type": "Teori",
+            "driveId": "YOUR_DRIVE_ID_HERE",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "test Sistem Operasi (Praktikum)",
+            "type": "Praktikum",
+            "driveId": "YOUR_DRIVE_ID_HERE",
+            "uploadDate": "13 Oktober 2025"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "semester": 2,
+    "folder": "semester2",
+    "courses": []
+  },
+  {
+    "semester": 3,
+    "folder": "semester3",
+    "courses": []
+  },
+  {
+    "semester": 4,
+    "folder": "semester4",
+    "courses": []
+  },
+  {
+    "semester": 5,
+    "folder": "semester5",
+    "courses": []
+  },
+  {
+    "semester": 6,
+    "folder": "semester6",
+    "courses": []
+  },
+  {
+    "semester": 7,
+    "folder": "semester7",
+    "courses": []
+  },
+  {
+    "semester": 8,
+    "folder": "semester8",
+    "courses": []
+  }
+]
