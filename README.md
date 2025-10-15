@@ -201,4 +201,4 @@ Cari bagian kode ini di dalam fungsi `loadSemesters()`:
                 }
     ```
 
-Dengan mengikuti panduan ini, Anda dapat dengan mudah mengelola konten dan tampilan proyek Anda.
+apakanlah itu biar ga apakali dia bro.
