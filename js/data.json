@@ -157,15 +157,45 @@
         "overview": "SELECT * RKS1C",
         "materials": [
           {
-            "title": "test PTIL (Teori)",
+            "title": "PTIL 1",
             "type": "Teori",
-            "driveId": "YOUR_DRIVE_ID_HERE",
+            "driveId": "10N5AsfxiFWASDK37OmXO1whl8P5kgFBy",
             "uploadDate": "13 Oktober 2025"
           },
           {
-            "title": "test PTIL (Praktikum)",
-            "type": "Praktikum",
-            "driveId": "YOUR_DRIVE_ID_HERE",
+            "title": "PTIL 2",
+            "type": "Teori",
+            "driveId": "1qeu3I0l4UtWym1f0ddHxkfFkR94Ac6-i",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "PTIL 3",
+            "type": "Teori",
+            "driveId": "1gQK3j9iMtKDbRkOJQ55ownFqpcgnAUHa",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "PTIL 4",
+            "type": "Teori",
+            "driveId": "1nq5ubxxAlhZ6qdn4KJ_gfdZAOYB389D0",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "PTIL 5",
+            "type": "Teori",
+            "driveId": "1W43UVk65MyG_zOmyguUAuaxtYgnF343H",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "PTIL 6",
+            "type": "Teori",
+            "driveId": "1GG4F8jF6LfzDRU5npWfZKfrh_nMQcBNv",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "PTIL 7",
+            "type": "Teori",
+            "driveId": "1rfI0CgGqyr4_ca0IsXies_FNKkgWGbm3",
             "uploadDate": "13 Oktober 2025"
           }
         ]
