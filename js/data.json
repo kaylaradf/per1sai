@@ -267,33 +267,39 @@
         "overview": "Mata kuliah ini membahas konsep dasar dan fungsi sistem operasi komputer, termasuk manajemen proses, memori, dan sistem file.",
         "materials": [
           {
-            "title": "Mata kuliah ini membahas konsep dasar dan fungsi sistem operasi komputer, termasuk manajemen proses, memori, dan sistem file.",
-            "type": "Teori",
-            "driveId": "YOUR_DRIVE_ID_HERE_1",
-            "uploadDate": "12 Oktober 2025"
-          },
-          {
-            "title": "Manajemen Proses & Thread",
-            "type": "Teori",
-            "driveId": "YOUR_DRIVE_ID_HERE_2",
-            "uploadDate": "12 Oktober 2025"
-          },
-          {
-            "title": "Praktikum 1: Instalasi Linux dalam kehidupan sehari hari yang tak pernah dibah ubasdjaslfkdasjdlajd",
+            "title": "1.2. Latihan Soal CMD",
             "type": "Praktikum",
-            "driveId": "YOUR_DRIVE_ID_HERE_3",
+            "driveId": "1PoRZqscDFMxze2AXMMSm_AeAEFzM6i2I",
             "uploadDate": "12 Oktober 2025"
           },
           {
-            "title": "test Sistem Operasi (Teori)",
+            "title": "1.2. Modul Praktikum Mahasiswa",
+            "type": "Praktikum",
+            "driveId": "1EXw-hSlj-dWWOPbxDfZyICpNvHn_gKpo",
+            "uploadDate": "12 Oktober 2025"
+          },
+          {
+            "title": "Modul Praktikum SO-RKS-PNC[1]",
+            "type": "Praktikum",
+            "driveId": "1G9J2OCJzFWdIogEoUrm1kcB9iKHJkxU2",
+            "uploadDate": "12 Oktober 2025"
+          },
+          {
+            "title": "MODUL-1-PENGANTAR-SISTEM-OPERASI",
             "type": "Teori",
-            "driveId": "YOUR_DRIVE_ID_HERE",
+            "driveId": "1WHc2Vve-lnrdNCNVNvIc8b8shV6PMomT",
             "uploadDate": "13 Oktober 2025"
           },
           {
-            "title": "test Sistem Operasi (Praktikum)",
-            "type": "Praktikum",
-            "driveId": "YOUR_DRIVE_ID_HERE",
+            "title": "MODUL-2-STRUKTUR-SISTEM-KOMPUTER",
+            "type": "Teori",
+            "driveId": "1fifg_lUtBX8b7Wa2VwuyX6uyoqwP1OEY",
+            "uploadDate": "13 Oktober 2025"
+          },
+          {
+            "title": "MODUL-2-STRUKTUR-SISTEM-KOMPUTER-2",
+            "type": "Teori",
+            "driveId": "1T_0xpYGw_ShdKHFqoO5WvN9M2nFREfuo",
             "uploadDate": "13 Oktober 2025"
           }
         ]
