@@ -1,0 +1,21 @@
+{
+    "0": [{ "time": "N/A", "subject": "Libur", "room": "Kos Nabil" }],
+    "1": [
+        { "time": "09:25 - 15:30", "subject": "Sistem Operasi", "room": "GTIL 5.2" }
+    ],
+    "2": [
+        { "time": "09:25 - 11:10", "subject": "English", "room": "GKB 3.8" },
+        { "time": "11:15 - 15:30", "subject": "Arsikom", "room": "GTIL 5.3" }
+    ],
+    "3": [
+        { "time": "08:00 - 15:30", "subject": "Alpro", "room": "GTIL 5.3" }
+    ],
+    "4": [
+        { "time": "07:30 - 09:10", "subject": "Kalkulus", "room": "GKB 3.8" },
+        { "time": "09:25 - 11:10", "subject": "PTIL (Teori)", "room": "GKB 3.9" },
+        { "time": "11:15 - 13:50", "subject": "PTIL (Praktikum)", "room": "GKB 2.6" },
+        { "time": "13:50 - 14:40", "subject": "Sisdig (Teori)", "room": "GKB 3.5" }
+    ],
+    "5": [{ "time": "07:30 - 11:10", "subject": "Sisdig (Praktikum)", "room": "GTIL 4.2" }],
+    "6": [{ "time": "N/A", "subject": "Libur", "room": "Kos Bima" }]
+}

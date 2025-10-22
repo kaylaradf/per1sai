@@ -159,13 +159,13 @@ body {
 .main {
     flex: 1;
     padding: var(--spacing-2xl) 0;
+    background-color: var(--background);
 }
 
 /* Hero Section */
 .hero {
     text-align: center;
     padding: var(--spacing-3xl) 0;
-    background-color: var(--background);
 }
 
 .hero-title {
@@ -199,6 +199,7 @@ body {
 /* Semester Section */
 .semester-section {
     padding: var(--spacing-3xl) 0;
+    background-color: var(--background);
 }
 
 .section-title {
