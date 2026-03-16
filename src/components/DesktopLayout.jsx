@@ -43,7 +43,8 @@ export default function DesktopLayout() {
       <nav className="top-nav" data-purpose="top-navigation">
         <button className="brand-mark" type="button" onClick={() => navigate('/')} aria-label="Go home">
           <svg fill="currentColor" height="16" viewBox="0 0 24 24" width="16" aria-hidden="true">
-            <path d="M12 2L1 21h22L12 2zM12 6l7.5 13h-15L12 6z" />
+            <path d="M2 6h7l2 2h11v10H2z" />
+            <path d="M2 8h20v10H2z" fill="none" stroke="currentColor" strokeWidth="1.5" />
           </svg>
         </button>
         <div className="menu-row">

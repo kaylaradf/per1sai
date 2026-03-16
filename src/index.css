@@ -813,7 +813,7 @@ a {
   }
 
   .window-header {
-    grid-template-columns: auto minmax(0, 1fr) auto minmax(0, 1fr) auto;
+    display: flex;
     gap: 0.35rem;
     padding: 0 0.4rem;
   }
@@ -826,11 +826,14 @@ a {
   }
 
   .title-bar-lines {
+    display: block;
+    flex: 1 1 auto;
     margin: 0 0.15rem;
     min-width: 0.45rem;
   }
 
   .window-title {
+    flex: 0 1 auto;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -929,10 +932,6 @@ a {
 
   .archive-window {
     width: min(100%, 36.5rem);
-  }
-
-  .title-bar-lines {
-    display: none;
   }
 
   .window-header {
