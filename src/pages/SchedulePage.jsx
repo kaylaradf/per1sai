@@ -46,7 +46,6 @@ export default function SchedulePage() {
               </p>
               <p>{entry.room}</p>
               <p>{entry.lecturer}</p>
-              <p className="task-meta">{entry.type}</p>
             </article>
           ))}
         </div>

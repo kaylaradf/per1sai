@@ -33,7 +33,7 @@ function BlogIcon() {
   )
 }
 
-const avatarUrl = 'https://edodema.sirv.com/projectpop.xyz/noFilter.webp'
+const avatarUrl = 'https://manage.projectpop.xyz/api/files/pbc_3034895069/mmlyewa4t6f6qg7/background_border_9l62clvpdi.png?token='
 
 export default function AboutPage() {
   const { data: creator, loading } = useAsyncData(() => getSiteSettings(), 'about', {
