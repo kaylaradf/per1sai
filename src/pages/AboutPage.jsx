@@ -3,10 +3,11 @@ import useDesktopPageMeta from '../hooks/useDesktopPageMeta'
 
 const creator = {
   name: 'emaa',
-  role: 'Creator & Maintainer',
+  role: 'Creator & Maintainer.',
   summary:
     'Frontend archive interface berbasis React dengan gaya retro desktop untuk navigasi materi, tugas, jadwal, dan pengumuman.',
   githubUrl: 'https://github.com/emaa/adata',
+  blogUrl: 'https://your-blog.example',
 }
 
 function GitHubIcon() {
@@ -20,36 +21,80 @@ function GitHubIcon() {
   )
 }
 
+function BlogIcon() {
+  return (
+    <svg aria-hidden="true" className="github-icon" viewBox="0 0 24 24">
+      <path
+        d="M4 5.5h16v13H4z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <path
+        d="M7 9h10M7 12h7M7 15h5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+    </svg>
+  )
+}
+
+function ProfileAvatar() {
+  return (
+    <svg aria-hidden="true" className="profile-avatar" viewBox="0 0 72 72">
+      <path d="M14 60V49c0-10 7-17 22-17s22 7 22 17v11" fill="none" stroke="currentColor" strokeWidth="3" />
+      <circle cx="36" cy="20" r="12" fill="none" stroke="currentColor" strokeWidth="3" />
+      <rect x="7" y="3" width="58" height="58" fill="none" stroke="currentColor" strokeWidth="3" />
+    </svg>
+  )
+}
+
 export default function AboutPage() {
   useDesktopPageMeta('About', 'Informasi creator · project profile')
 
   return (
     <div className="page-content">
       <Breadcrumbs items={[{ label: 'Home', to: '/' }, { label: 'About' }]} />
-      <div className="about-grid">
-        <section className="about-panel">
-          <p className="about-kicker">Creator</p>
-          <h2>{creator.name}</h2>
-          <p>{creator.role}</p>
-          <p>{creator.summary}</p>
-        </section>
 
-        <section className="about-panel">
-          <p className="about-kicker">Repository</p>
-          <h2>GitHub</h2>
-          <p>Link ini masih placeholder dan bisa diganti nanti langsung dari file page ini.</p>
-          <a
-            href={creator.githubUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="action-btn about-link-btn"
-            aria-label="Open GitHub repository"
-          >
-            <GitHubIcon />
-            <span>Buka Repo</span>
-          </a>
-        </section>
-      </div>
+      <section className="profile-card">
+        <div className="profile-card-body">
+          <div className="profile-hero">
+            <div className="profile-avatar-wrap">
+              <ProfileAvatar />
+            </div>
+            <div className="profile-name-wrap">
+              <h2>{creator.name}</h2>
+            </div>
+          </div>
+
+          <div className="profile-divider" />
+
+          <p className="profile-summary">
+            <strong>{creator.role}</strong> {creator.summary}
+          </p>
+          <div className="profile-socials">
+            <a
+              href={creator.githubUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="profile-github-link"
+              aria-label="Open GitHub repository"
+            >
+              <GitHubIcon />
+            </a>
+            <a
+              href={creator.blogUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="profile-github-link"
+              aria-label="Open personal blog"
+            >
+              <BlogIcon />
+            </a>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

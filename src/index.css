@@ -498,7 +498,7 @@ a {
 
 .kanban-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.65rem;
 }
 
@@ -506,6 +506,15 @@ a {
   margin: 0 0 0.5rem;
   font-size: 0.8rem;
   text-transform: uppercase;
+}
+
+.task-tab-panel {
+  min-height: 14rem;
+}
+
+.task-list {
+  display: grid;
+  gap: 0.5rem;
 }
 
 .task-card {
@@ -626,50 +635,96 @@ a {
   justify-content: space-between;
 }
 
-.about-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
+.profile-card {
+  color: #22201d;
 }
 
-.about-panel {
-  border: 2px solid #141414;
-  background: #fff;
-  padding: 0.8rem;
+.profile-card-body {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
 }
 
-.about-panel h2 {
-  margin: 0 0 0.45rem;
-  font-size: 1rem;
-}
-
-.about-panel p {
-  margin: 0 0 0.45rem;
-  font-size: 0.82rem;
-  line-height: 1.5;
-}
-
-.about-panel p:last-child {
-  margin-bottom: 0;
-}
-
-.about-kicker {
-  font-size: 0.68rem;
+.profile-kicker {
+  margin: 0;
+  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-.about-link-btn {
+.profile-hero {
+  display: grid;
+  grid-template-columns: 4.4rem minmax(0, 1fr);
+  gap: 0.9rem;
+  align-items: center;
+}
+
+.profile-avatar-wrap {
+  border: 2px solid #4f4b45;
+  background: #d8cfbf;
+  padding: 0.2rem;
+  color: #5d5952;
+}
+
+.profile-avatar {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.profile-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.profile-name-wrap h2 {
+  margin: 0;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.profile-github-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  margin-top: 0.35rem;
+  justify-content: center;
+  border: 2px solid #4f4b45;
+  width: 2.4rem;
+  height: 2.4rem;
+  background: #fff;
+  box-shadow: 2px 2px 0 0 #4f4b45;
+}
+
+.profile-socials {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  gap: 0.55rem;
+}
+
+.profile-github-link:hover {
+  background: #4f4b45;
+  color: #f2eadb;
 }
 
 .github-icon {
-  width: 0.9rem;
-  height: 0.9rem;
+  width: 1rem;
+  height: 1rem;
+}
+
+.profile-divider {
+  height: 0;
+  border-top: 2px solid #4f4b45;
+  border-bottom: 1px solid #c1b5a3;
+}
+
+.profile-summary {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
 }
 
 .blog-detail blockquote {
@@ -699,17 +754,10 @@ a {
     gap: 1.25rem;
   }
 
-  .kanban-grid {
-    grid-template-columns: 1fr;
-  }
-
   .toolbar {
     grid-template-columns: 1fr;
   }
 
-  .about-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 640px) {
@@ -812,12 +860,26 @@ a {
     box-shadow: 1px 1px 0 0 #141414;
   }
 
-  .about-panel {
-    padding: 0.7rem;
+  .profile-card-body {
+    padding: 0;
+  }
+
+  .profile-hero {
+    grid-template-columns: 3.8rem minmax(0, 1fr);
+    gap: 0.7rem;
+  }
+
+  .profile-name-wrap h2 {
+    font-size: 1.65rem;
+  }
+
+  .profile-summary,
+  .profile-github-link {
+    font-size: 0.82rem;
   }
 
   .kanban-grid {
-    grid-template-columns: repeat(3, minmax(15rem, 1fr));
+    grid-template-columns: repeat(2, minmax(15rem, 1fr));
     gap: 0.75rem;
     overflow-x: auto;
     align-items: start;

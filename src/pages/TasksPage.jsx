@@ -3,10 +3,9 @@ import Breadcrumbs from '../components/Breadcrumbs'
 import { getTasks } from '../data/mockDb'
 import useDesktopPageMeta from '../hooks/useDesktopPageMeta'
 
-const statusLabels = {
-  todo: 'To Do',
+const tabLabels = {
   in_progress: 'In Progress',
-  done: 'Done',
+  expired: 'Expired',
 }
 
 const priorityLabels = {
@@ -15,7 +14,7 @@ const priorityLabels = {
   high: 'High',
 }
 
-const columns = ['todo', 'in_progress', 'done']
+const columns = ['in_progress', 'expired']
 
 function isOverdue(task) {
   if (task.status === 'done') {
@@ -31,7 +30,6 @@ export default function TasksPage() {
   const tasks = getTasks()
   const [query, setQuery] = useState('')
   const [priorityFilter, setPriorityFilter] = useState('all')
-  useDesktopPageMeta('Tugas & Deadline', `${tasks.length} tugas aktif`)
 
   const filteredTasks = tasks.filter((task) => {
     const normalizedQuery = query.trim().toLowerCase()
@@ -46,6 +44,17 @@ export default function TasksPage() {
   })
 
   const overdueCount = filteredTasks.filter((task) => isOverdue(task)).length
+  const groupedTasks = {
+    in_progress: filteredTasks
+      .filter((task) => task.status !== 'done' && !isOverdue(task))
+      .sort((left, right) => left.dueDate.localeCompare(right.dueDate)),
+    expired: filteredTasks
+      .filter((task) => task.status !== 'done' && isOverdue(task))
+      .sort((left, right) => right.dueDate.localeCompare(left.dueDate)),
+  }
+  const openTaskCount = groupedTasks.in_progress.length + groupedTasks.expired.length
+
+  useDesktopPageMeta('Tugas & Deadline', `${openTaskCount} tugas terbuka · ${overdueCount} expired`)
 
   return (
     <div className="page-content">
@@ -76,18 +85,16 @@ export default function TasksPage() {
         </label>
       </div>
       <p className="list-summary">
-        {filteredTasks.length} tugas cocok filter · {overdueCount} overdue.
+        {openTaskCount} tugas terbuka · {overdueCount} expired · task selesai disembunyikan.
       </p>
       <div className="kanban-grid">
-        {columns.map((status) => {
-          const columnTasks = filteredTasks
-            .filter((task) => task.status === status)
-            .sort((left, right) => left.dueDate.localeCompare(right.dueDate))
-
-          return (
-            <section key={status} className="kanban-column">
-              <h2>{statusLabels[status]}</h2>
-              {columnTasks.map((task) => {
+        {columns.map((column) => (
+          <section key={column} className="kanban-column task-tab-panel">
+            <h2>
+              {tabLabels[column]} ({groupedTasks[column].length})
+            </h2>
+            <div className="task-list">
+              {groupedTasks[column].map((task) => {
                 const overdue = isOverdue(task)
 
                 return (
@@ -100,16 +107,14 @@ export default function TasksPage() {
                       </span>
                       <span>{task.type}</span>
                     </p>
-                    <p className="task-meta">
-                      Due: {task.dueDate} {overdue ? '· Overdue' : ''}
-                    </p>
+                    <p className="task-meta">Due: {task.dueDate}</p>
                   </article>
                 )
               })}
-              {columnTasks.length === 0 && <p className="column-empty">Tidak ada tugas pada kolom ini.</p>}
-            </section>
-          )
-        })}
+              {groupedTasks[column].length === 0 && <p className="column-empty">Tidak ada tugas pada kolom ini.</p>}
+            </div>
+          </section>
+        ))}
       </div>
     </div>
   )
