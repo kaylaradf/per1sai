@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
 :root {
   --ink: #141414;
@@ -18,7 +18,7 @@ body,
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'VT323', monospace;
   background-color: #f3f4f6;
   color: var(--ink);
 }
@@ -203,17 +203,20 @@ a {
 }
 
 .window-header {
-  height: 2rem;
+  height: 2.15rem;
   border-bottom: 2px solid #141414;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto minmax(0, 1fr) auto;
   align-items: center;
-  padding: 0 0.5rem;
+  gap: 0.45rem;
+  padding: 0 0.6rem;
   user-select: none;
 }
 
 .window-control {
-  width: 1rem;
-  height: 1rem;
+  flex: 0 0 1.05rem;
+  width: 1.05rem;
+  height: 1.05rem;
   border: 2px solid #141414;
   background: #fff;
   cursor: pointer;
@@ -233,20 +236,22 @@ a {
     transparent 3px
   );
   height: 12px;
-  flex-grow: 1;
-  margin: 0 8px;
+  min-width: 0;
 }
 
 .window-title {
   margin: 0;
   font-size: 0.875rem;
   font-weight: 700;
+  line-height: 1;
   white-space: nowrap;
+  text-align: center;
 }
 
 .window-zoom {
-  width: 1rem;
-  height: 1rem;
+  flex: 0 0 1.05rem;
+  width: 1.05rem;
+  height: 1.05rem;
   border: 2px solid #141414;
   display: flex;
   flex-wrap: wrap;
@@ -801,10 +806,34 @@ a {
   .archive-window {
     position: static;
     transform: none;
-    width: min(100%, 38rem);
+    width: min(100%, 37.5rem);
     margin: auto;
     max-height: calc(100dvh - 5rem);
     box-shadow: 2px 2px 0 0 #141414;
+  }
+
+  .window-header {
+    grid-template-columns: auto minmax(0, 1fr) auto minmax(0, 1fr) auto;
+    gap: 0.35rem;
+    padding: 0 0.4rem;
+  }
+
+  .window-control,
+  .window-zoom {
+    flex: 0 0 0.95rem;
+    width: 0.95rem;
+    height: 0.95rem;
+  }
+
+  .title-bar-lines {
+    margin: 0 0.15rem;
+    min-width: 0.45rem;
+  }
+
+  .window-title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .window-content {
@@ -890,5 +919,23 @@ a {
   .kanban-column {
     min-height: 100%;
     scroll-snap-align: start;
+  }
+}
+
+@media (max-width: 480px) {
+  .desktop-workspace {
+    padding: 0.65rem 0.35rem;
+  }
+
+  .archive-window {
+    width: min(100%, 36.5rem);
+  }
+
+  .title-bar-lines {
+    display: none;
+  }
+
+  .window-header {
+    gap: 0.3rem;
   }
 }

@@ -33,15 +33,7 @@ function BlogIcon() {
   )
 }
 
-function ProfileAvatar() {
-  return (
-    <svg aria-hidden="true" className="profile-avatar" viewBox="0 0 72 72">
-      <path d="M14 60V49c0-10 7-17 22-17s22 7 22 17v11" fill="none" stroke="currentColor" strokeWidth="3" />
-      <circle cx="36" cy="20" r="12" fill="none" stroke="currentColor" strokeWidth="3" />
-      <rect x="7" y="3" width="58" height="58" fill="none" stroke="currentColor" strokeWidth="3" />
-    </svg>
-  )
-}
+const avatarUrl = 'https://edodema.sirv.com/projectpop.xyz/noFilter.webp'
 
 export default function AboutPage() {
   const { data: creator, loading } = useAsyncData(() => getSiteSettings(), 'about', {
@@ -54,7 +46,7 @@ export default function AboutPage() {
     siteTitle: 'University Archive',
   })
 
-  useDesktopPageMeta('About', loading ? 'Memuat profil...' : 'Informasi creator · project profile')
+  useDesktopPageMeta('About', loading ? 'Memuat profil...' : 'Maintainer')
 
   return (
     <div className="page-content">
@@ -64,7 +56,7 @@ export default function AboutPage() {
         <div className="profile-card-body">
           <div className="profile-hero">
             <div className="profile-avatar-wrap">
-              <ProfileAvatar />
+              <img className="profile-avatar" src={avatarUrl} alt="Profile avatar" />
             </div>
             <div className="profile-name-wrap">
               <h2>{creator.aboutName}</h2>

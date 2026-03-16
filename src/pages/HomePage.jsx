@@ -9,7 +9,7 @@ export default function HomePage() {
   const totalCourses = semesters.reduce((sum, semester) => sum + semester.courses.length, 0)
 
   useDesktopPageMeta(
-    'University Archive',
+    'Archive',
     loading ? 'Memuat arsip dari PocketBase...' : `${semesters.length} semester · ${totalCourses} mata kuliah`,
   )
 
@@ -24,8 +24,7 @@ export default function HomePage() {
     <div className="page-content">
       <Breadcrumbs items={[{ label: 'Home' }]} />
       <p className="page-description">
-        Navigasi materi kuliah dimulai dari semester. Data sekarang membaca PocketBase dengan fallback aman untuk
-        collection yang belum terisi.
+        Kasih Paha
       </p>
       {loading ? <p className="empty-state">Memuat daftar semester...</p> : <FolderGrid items={folders} />}
     </div>
