@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Public Archive - Retro Desktop</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter (specified in THEME_3) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<style data-purpose="base-typography">
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f3f4f6; /* Light grey background */
+      color: #141414; /* Custom color from THEME_3 */
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+    .pixel-border {
+      border: 2px solid #141414;
+      box-shadow: 2px 2px 0 0 #141414;
+    }
+    .retro-shadow {
+      box-shadow: 4px 4px 0 0 #141414;
+    }
+  </style>
+<style data-purpose="ui-components">
+    /* Folder Icon SVG style */
+    .folder-icon {
+      width: 48px;
+      height: 48px;
+      fill: none;
+      stroke: #141414;
+      stroke-width: 2;
+    }
+    /* Menu hover effect */
+    .menu-item:hover {
+      background-color: #141414;
+      color: #ffffff;
+    }
+    /* Window Title Bar pattern */
+    .title-bar-lines {
+      background-image: repeating-linear-gradient(
+        0deg,
+        #141414,
+        #141414 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      height: 12px;
+      flex-grow: 1;
+      margin: 0 8px;
+    }
+  </style>
+</head>
+<body class="flex flex-col">
+<!-- BEGIN: DesktopMenuBar -->
+<nav class="bg-white border-b-2 border-black flex items-center px-4 py-1 h-8 z-50 text-sm font-bold select-none" data-purpose="top-navigation">
+<div class="mr-6">
+<svg fill="currentColor" height="16" viewbox="0 0 24 24" width="16">
+<path d="M12 2L1 21h22L12 2zM12 6l7.5 13h-15L12 6z"></path>
+</svg>
+</div>
+<ul class="flex space-x-6 h-full items-center">
+<li class="menu-item px-2 h-full flex items-center cursor-default" style="">Tugas</li>
+<li class="menu-item px-2 h-full flex items-center cursor-default" style="">Jadwal</li>
+<li class="menu-item px-2 h-full flex items-center cursor-default" style="">Pengumuman</li>
+<li class="menu-item px-2 h-full flex items-center cursor-default" style="">Info</li>
+<li class="menu-item px-2 h-full flex items-center cursor-default" style=""><br/></li>
+</ul>
+<div class="ml-auto text-xs" style="">9:41 AM</div>
+</nav>
+<!-- END: DesktopMenuBar -->
+<!-- BEGIN: DesktopArea -->
+<main class="relative flex-grow p-8 overflow-hidden bg-[#cccccc]" data-purpose="desktop-workspace">
+<!-- BEGIN: DesktopIcons -->
+<!-- Hard Drive Icon -->
+<div class="absolute right-8 top-8 flex flex-col items-center group cursor-pointer" data-purpose="drive-icon">
+<div class="w-12 h-16 border-2 border-black bg-white flex flex-col items-center justify-center pixel-border mb-1">
+<div class="w-8 h-1 bg-black mb-1"></div>
+<div class="w-1 h-1 bg-black self-end mr-1 mt-auto mb-1"></div>
+</div>
+<span class="bg-white px-1 text-xs border border-transparent group-hover:bg-black group-hover:text-white group-hover:border-black font-medium" style="">Archive HD</span>
+</div>
+<!-- Trash Icon -->
+<div class="absolute right-8 bottom-8 flex flex-col items-center group cursor-pointer" data-purpose="trash-icon">
+<div class="w-10 h-12 flex flex-col items-center">
+<div class="w-10 h-2 border-2 border-black bg-white mb-[-2px] z-10"></div>
+<div class="w-8 h-10 border-2 border-black bg-white flex justify-around p-1">
+<div class="w-[1px] h-full bg-black"></div>
+<div class="w-[1px] h-full bg-black"></div>
+<div class="w-[1px] h-full bg-black"></div>
+</div>
+</div>
+<span class="bg-white px-1 text-xs border border-transparent group-hover:bg-black group-hover:text-white group-hover:border-black font-medium mt-1" style="">Trash</span>
+</div>
+<!-- END: DesktopIcons -->
+<!-- BEGIN: MainArchiveWindow -->
+<section class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl bg-white pixel-border retro-shadow flex flex-col" data-purpose="archive-window">
+<!-- Window Header -->
+<header class="h-8 border-b-2 border-black flex items-center px-2 select-none">
+<!-- Close Box -->
+<a class="w-4 h-4 border-2 border-black bg-white cursor-pointer hover:bg-black transition-colors block" href="#" onclick="window.history.back(); return false;"></a>
+<!-- Title & Lines -->
+<div class="title-bar-lines"></div>
+<h1 class="text-sm font-bold px-2 whitespace-nowrap" style="">Semester 1</h1>
+<div class="title-bar-lines"></div>
+<!-- Zoom/Resize Box placeholder -->
+<div class="w-4 h-4 border-2 border-black flex flex-wrap p-[1px]">
+<div class="w-full h-[1px] bg-black"></div>
+</div>
+</header>
+<!-- Window Content -->
+<div class="p-8 grid grid-cols-4 gap-8 justify-items-center bg-white" data-purpose="window-grid"><!-- Calculus -->
+<div class="flex flex-col items-center group cursor-pointer" data-purpose="folder">
+<svg class="folder-icon mb-2" viewbox="0 0 24 24">
+<path d="M22 19V7H12L10 5H2v14h20z"></path>
+</svg>
+<span class="text-xs font-medium px-1 group-hover:bg-black group-hover:text-white">Calculus</span>
+</div>
+<!-- Data Structures -->
+<div class="flex flex-col items-center group cursor-pointer" data-purpose="folder">
+<svg class="folder-icon mb-2" viewbox="0 0 24 24">
+<path d="M22 19V7H12L10 5H2v14h20z"></path>
+</svg>
+<span class="text-xs font-medium px-1 group-hover:bg-black group-hover:text-white">Data Structures</span>
+</div>
+<!-- Discrete Math -->
+<div class="flex flex-col items-center group cursor-pointer" data-purpose="folder">
+<svg class="folder-icon mb-2" viewbox="0 0 24 24">
+<path d="M22 19V7H12L10 5H2v14h20z"></path>
+</svg>
+<span class="text-xs font-medium px-1 group-hover:bg-black group-hover:text-white">Discrete Math</span>
+</div>
+<!-- Physics -->
+<div class="flex flex-col items-center group cursor-pointer" data-purpose="folder">
+<svg class="folder-icon mb-2" viewbox="0 0 24 24">
+<path d="M22 19V7H12L10 5H2v14h20z"></path>
+</svg>
+<span class="text-xs font-medium px-1 group-hover:bg-black group-hover:text-white">Physics</span>
+</div>
+<!-- Composition -->
+<div class="flex flex-col items-center group cursor-pointer" data-purpose="folder">
+<svg class="folder-icon mb-2" viewbox="0 0 24 24">
+<path d="M22 19V7H12L10 5H2v14h20z"></path>
+</svg>
+<span class="text-xs font-medium px-1 group-hover:bg-black group-hover:text-white">Composition</span>
+</div></div>
+<!-- Window Status Bar -->
+<footer class="h-6 border-t-2 border-black bg-white flex items-center px-4 text-[10px] font-bold uppercase tracking-wider">5 items | 128MB AVAILABLE</footer>
+</section>
+<!-- END: MainArchiveWindow -->
+</main>
+<!-- END: DesktopArea -->
+</body></html>
