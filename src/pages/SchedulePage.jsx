@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { getScheduleForDay, getWeekdayLabel, getWeekdays } from '../data/mockDb'
+import { getScheduleForDay, getWeekdayLabel, getWeekdays } from '../data/archiveApi'
+import useAsyncData from '../hooks/useAsyncData'
 import useDesktopPageMeta from '../hooks/useDesktopPageMeta'
 
 export default function SchedulePage() {
@@ -8,9 +9,9 @@ export default function SchedulePage() {
   const [selectedDay, setSelectedDay] = useState(dayIndex)
   const weekdayOptions = getWeekdays()
   const selectedLabel = getWeekdayLabel(selectedDay)
-  const entries = getScheduleForDay(selectedDay)
+  const { data: entries, loading } = useAsyncData(() => getScheduleForDay(selectedDay), `schedule:${selectedDay}`, [])
 
-  useDesktopPageMeta('Jadwal Kuliah', `${entries.length} kelas · ${selectedLabel}`)
+  useDesktopPageMeta('Jadwal Kuliah', loading ? 'Memuat jadwal...' : `${entries.length} kelas · ${selectedLabel}`)
 
   return (
     <div className="page-content">
@@ -31,7 +32,9 @@ export default function SchedulePage() {
         Menampilkan {entries.length} kelas untuk {selectedLabel}. Hari ini: {getWeekdayLabel(dayIndex)}.
       </p>
 
-      {entries.length === 0 ? (
+      {loading ? (
+        <p className="empty-state">Memuat jadwal untuk {selectedLabel}...</p>
+      ) : entries.length === 0 ? (
         <p className="empty-state">Tidak ada jadwal pada hari {selectedLabel}.</p>
       ) : (
         <div className="schedule-list">

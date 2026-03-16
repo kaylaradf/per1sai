@@ -1,7 +1,8 @@
 import { Link, useParams } from 'react-router-dom'
 import Breadcrumbs from '../components/Breadcrumbs'
 import FolderGrid from '../components/FolderGrid'
-import { getCourseById, getSemesterById } from '../data/mockDb'
+import { getCourseById, getSemesterById } from '../data/archiveApi'
+import useAsyncData from '../hooks/useAsyncData'
 import useDesktopPageMeta from '../hooks/useDesktopPageMeta'
 
 const categoryLabels = {
@@ -11,14 +12,41 @@ const categoryLabels = {
 
 export default function CoursePage() {
   const { semesterId, courseId } = useParams()
-  const semester = getSemesterById(semesterId)
-  const course = getCourseById(semesterId, courseId)
+  const { data, loading } = useAsyncData(
+    async () => {
+      const [semester, course] = await Promise.all([getSemesterById(semesterId), getCourseById(semesterId, courseId)])
+
+      return {
+        course,
+        semester,
+      }
+    },
+    `course:${semesterId}:${courseId}`,
+    {
+      course: null,
+      semester: null,
+    },
+  )
+  const { semester, course } = data
   const totalMaterials = course ? Object.values(course.categories).flat().length : 0
 
-  const title = course ? course.name : 'Mata kuliah tidak ditemukan'
-  const status = course ? `${totalMaterials} materi · 2 kategori` : 'Periksa semester/mata kuliah'
+  const title = loading ? 'Memuat mata kuliah...' : course ? course.name : 'Mata kuliah tidak ditemukan'
+  const status = loading
+    ? 'Sinkronisasi mata kuliah'
+    : course
+      ? `${totalMaterials} materi · 2 kategori`
+      : 'Periksa semester/mata kuliah'
 
   useDesktopPageMeta(title, status)
+
+  if (loading) {
+    return (
+      <div className="page-content">
+        <Breadcrumbs items={[{ label: 'Home', to: '/' }, { label: 'Loading' }]} />
+        <p className="empty-state">Memuat mata kuliah...</p>
+      </div>
+    )
+  }
 
   if (!semester || !course) {
     return (

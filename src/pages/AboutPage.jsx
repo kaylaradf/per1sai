@@ -1,14 +1,7 @@
 import Breadcrumbs from '../components/Breadcrumbs'
+import { getSiteSettings } from '../data/archiveApi'
+import useAsyncData from '../hooks/useAsyncData'
 import useDesktopPageMeta from '../hooks/useDesktopPageMeta'
-
-const creator = {
-  name: 'emaa',
-  role: 'Creator & Maintainer.',
-  summary:
-    'Frontend archive interface berbasis React dengan gaya retro desktop untuk navigasi materi, tugas, jadwal, dan pengumuman.',
-  githubUrl: 'https://github.com/emaa/adata',
-  blogUrl: 'https://your-blog.example',
-}
 
 function GitHubIcon() {
   return (
@@ -51,7 +44,17 @@ function ProfileAvatar() {
 }
 
 export default function AboutPage() {
-  useDesktopPageMeta('About', 'Informasi creator · project profile')
+  const { data: creator, loading } = useAsyncData(() => getSiteSettings(), 'about', {
+    aboutName: 'emaa',
+    aboutRole: 'Creator & Maintainer.',
+    aboutSummary:
+      'Frontend archive interface berbasis React dengan gaya retro desktop untuk navigasi materi, tugas, jadwal, dan pengumuman.',
+    blogUrl: 'https://your-blog.example',
+    githubUrl: 'https://github.com/emaa/adata',
+    siteTitle: 'University Archive',
+  })
+
+  useDesktopPageMeta('About', loading ? 'Memuat profil...' : 'Informasi creator · project profile')
 
   return (
     <div className="page-content">
@@ -64,14 +67,14 @@ export default function AboutPage() {
               <ProfileAvatar />
             </div>
             <div className="profile-name-wrap">
-              <h2>{creator.name}</h2>
+              <h2>{creator.aboutName}</h2>
             </div>
           </div>
 
           <div className="profile-divider" />
 
           <p className="profile-summary">
-            <strong>{creator.role}</strong> {creator.summary}
+            <strong>{creator.aboutRole}</strong> {creator.aboutSummary}
           </p>
           <div className="profile-socials">
             <a

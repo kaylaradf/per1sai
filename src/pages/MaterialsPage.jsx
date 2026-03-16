@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { getCourseById, getMaterials, getSemesterById } from '../data/mockDb'
+import { getCourseById, getMaterials, getSemesterById } from '../data/archiveApi'
+import useAsyncData from '../hooks/useAsyncData'
 import useDesktopPageMeta from '../hooks/useDesktopPageMeta'
 import { getTypeLabel, getViewUrl } from '../lib/materialActions'
 
@@ -12,19 +13,47 @@ const categoryLabels = {
 
 export default function MaterialsPage() {
   const { semesterId, courseId, category } = useParams()
-  const semester = getSemesterById(semesterId)
-  const course = getCourseById(semesterId, courseId)
-  const materials = getMaterials(semesterId, courseId, category)
   const categoryLabel = categoryLabels[category] ?? category
   const [query, setQuery] = useState('')
   const [typeFilter, setTypeFilter] = useState('all')
   const [sortBy, setSortBy] = useState('newest')
   const [visibleCount, setVisibleCount] = useState(10)
+  const { data, loading } = useAsyncData(
+    async () => {
+      const [semester, course, materials] = await Promise.all([
+        getSemesterById(semesterId),
+        getCourseById(semesterId, courseId),
+        getMaterials(semesterId, courseId, category),
+      ])
 
-  const title = course ? `${course.name} · ${categoryLabel}` : 'Materi tidak ditemukan'
-  const status = course ? `${materials.length} materi tersedia` : 'Periksa route materi'
+      return {
+        course,
+        materials,
+        semester,
+      }
+    },
+    `materials:${semesterId}:${courseId}:${category}`,
+    {
+      course: null,
+      materials: [],
+      semester: null,
+    },
+  )
+  const { semester, course, materials } = data
+
+  const title = loading ? 'Memuat materi...' : course ? `${course.name} · ${categoryLabel}` : 'Materi tidak ditemukan'
+  const status = loading ? 'Sinkronisasi daftar materi' : course ? `${materials.length} materi tersedia` : 'Periksa route materi'
 
   useDesktopPageMeta(title, status)
+
+  if (loading) {
+    return (
+      <div className="page-content">
+        <Breadcrumbs items={[{ label: 'Home', to: '/' }, { label: 'Loading' }]} />
+        <p className="empty-state">Memuat daftar materi...</p>
+      </div>
+    )
+  }
 
   if (!semester || !course || !categoryLabels[category]) {
     return (

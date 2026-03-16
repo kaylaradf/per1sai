@@ -1,15 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { getAnnouncementsSeed, getAnnouncementStream } from '../data/mockDb'
+import { getAnnouncementsFeed } from '../data/archiveApi'
+import useAsyncData from '../hooks/useAsyncData'
 import useDesktopPageMeta from '../hooks/useDesktopPageMeta'
 
-const MAX_LIVE_ITEMS = 30
-
 export default function AnnouncementsPage() {
-  const [items, setItems] = useState(getAnnouncementsSeed)
+  const { data, loading } = useAsyncData(
+    () => getAnnouncementsFeed(),
+    'announcements',
+    {
+      items: [],
+      source: 'pocketbase',
+    },
+  )
   const [query, setQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
-  const stream = getAnnouncementStream()
+  const { items, source } = data
   const categories = ['all', ...new Set(items.map((item) => item.category))]
   const filteredItems = items.filter((item) => {
     const normalizedQuery = query.trim().toLowerCase()
@@ -23,34 +29,15 @@ export default function AnnouncementsPage() {
     return matchesQuery && matchesCategory
   })
 
-  useDesktopPageMeta('Announcement Board', `${items.length} pengumuman · realtime simulasi`)
-
-  useEffect(() => {
-    let index = 0
-
-    const timer = window.setInterval(() => {
-      const next = stream[index % stream.length]
-      index += 1
-
-      setItems((prev) => [
-        {
-          id: `sim-${Date.now()}`,
-          category: next.category,
-          title: next.title,
-          body: next.body,
-          time: 'Baru saja',
-        },
-        ...prev,
-      ].slice(0, MAX_LIVE_ITEMS))
-    }, 12000)
-
-    return () => window.clearInterval(timer)
-  }, [stream])
+  useDesktopPageMeta(
+    'Announcement Board',
+    loading ? 'Memuat pengumuman...' : `${items.length} pengumuman · ${source === 'mock' ? 'demo fallback' : 'PocketBase'}`,
+  )
 
   return (
     <div className="page-content">
       <Breadcrumbs items={[{ label: 'Home', to: '/' }, { label: 'Pengumuman' }]} />
-      <p className="live-indicator">Live simulation: ON</p>
+      <p className="live-indicator">{source === 'mock' ? 'Source fallback: demo data' : 'Live source: PocketBase'}</p>
       <div className="toolbar">
         <label className="toolbar-field">
           <span>Cari pengumuman</span>
@@ -78,10 +65,12 @@ export default function AnnouncementsPage() {
         </label>
       </div>
       <p className="list-summary">
-        Menampilkan {filteredItems.length} dari {items.length} pengumuman. History live dibatasi {MAX_LIVE_ITEMS} item.
+        Menampilkan {filteredItems.length} dari {items.length} pengumuman.
       </p>
 
-      {filteredItems.length === 0 ? (
+      {loading ? (
+        <p className="empty-state">Memuat pengumuman...</p>
+      ) : filteredItems.length === 0 ? (
         <p className="empty-state">Tidak ada pengumuman yang cocok dengan filter saat ini.</p>
       ) : (
         <div className="announcement-list">

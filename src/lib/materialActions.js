@@ -6,6 +6,10 @@ export function getFileExtension(fileName) {
 }
 
 export function getViewUrl(material) {
+  if (material.viewUrl) {
+    return material.viewUrl
+  }
+
   const ext = getFileExtension(material.fileName)
 
   if (ext === 'pdf') {

@@ -1,17 +1,31 @@
 import { Link, useParams } from 'react-router-dom'
 import Breadcrumbs from '../components/Breadcrumbs'
 import FolderGrid from '../components/FolderGrid'
-import { getSemesterById } from '../data/mockDb'
+import { getSemesterById } from '../data/archiveApi'
+import useAsyncData from '../hooks/useAsyncData'
 import useDesktopPageMeta from '../hooks/useDesktopPageMeta'
 
 export default function SemesterPage() {
   const { semesterId } = useParams()
-  const semester = getSemesterById(semesterId)
+  const { data: semester, loading } = useAsyncData(() => getSemesterById(semesterId), `semester:${semesterId}`, null)
 
-  const title = semester ? semester.name : 'Semester tidak ditemukan'
-  const status = semester ? `${semester.courses.length} mata kuliah` : 'Periksa route semester'
+  const title = loading ? 'Memuat semester...' : semester ? semester.name : 'Semester tidak ditemukan'
+  const status = loading
+    ? 'Sinkronisasi data semester'
+    : semester
+      ? `${semester.courses.length} mata kuliah`
+      : 'Periksa route semester'
 
   useDesktopPageMeta(title, status)
+
+  if (loading) {
+    return (
+      <div className="page-content">
+        <Breadcrumbs items={[{ label: 'Home', to: '/' }, { label: 'Loading' }]} />
+        <p className="empty-state">Memuat semester...</p>
+      </div>
+    )
+  }
 
   if (!semester) {
     return (

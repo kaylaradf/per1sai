@@ -1,13 +1,17 @@
 import Breadcrumbs from '../components/Breadcrumbs'
 import FolderGrid from '../components/FolderGrid'
-import { getSemesters } from '../data/mockDb'
+import { getSemesters } from '../data/archiveApi'
+import useAsyncData from '../hooks/useAsyncData'
 import useDesktopPageMeta from '../hooks/useDesktopPageMeta'
 
 export default function HomePage() {
-  const semesters = getSemesters()
+  const { data: semesters, loading } = useAsyncData(() => getSemesters(), 'home', [])
   const totalCourses = semesters.reduce((sum, semester) => sum + semester.courses.length, 0)
 
-  useDesktopPageMeta('University Archive', `${semesters.length} semester · ${totalCourses} mata kuliah`)
+  useDesktopPageMeta(
+    'University Archive',
+    loading ? 'Memuat arsip dari PocketBase...' : `${semesters.length} semester · ${totalCourses} mata kuliah`,
+  )
 
   const folders = semesters.map((semester) => ({
     id: semester.id,
@@ -20,10 +24,10 @@ export default function HomePage() {
     <div className="page-content">
       <Breadcrumbs items={[{ label: 'Home' }]} />
       <p className="page-description">
-        Navigasi materi kuliah dimulai dari semester. Seed dummy sekarang lebih padat supaya UI tetap teruji saat data
-        membesar.
+        Navigasi materi kuliah dimulai dari semester. Data sekarang membaca PocketBase dengan fallback aman untuk
+        collection yang belum terisi.
       </p>
-      <FolderGrid items={folders} />
+      {loading ? <p className="empty-state">Memuat daftar semester...</p> : <FolderGrid items={folders} />}
     </div>
   )
 }

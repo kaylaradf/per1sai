@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { getTasks } from '../data/mockDb'
+import { getTasks } from '../data/archiveApi'
+import useAsyncData from '../hooks/useAsyncData'
 import useDesktopPageMeta from '../hooks/useDesktopPageMeta'
 
 const tabLabels = {
@@ -27,7 +28,7 @@ function isOverdue(task) {
 }
 
 export default function TasksPage() {
-  const tasks = getTasks()
+  const { data: tasks, loading } = useAsyncData(() => getTasks(), 'tasks', [])
   const [query, setQuery] = useState('')
   const [priorityFilter, setPriorityFilter] = useState('all')
 
@@ -54,7 +55,10 @@ export default function TasksPage() {
   }
   const openTaskCount = groupedTasks.in_progress.length + groupedTasks.expired.length
 
-  useDesktopPageMeta('Tugas & Deadline', `${openTaskCount} tugas terbuka · ${overdueCount} expired`)
+  useDesktopPageMeta(
+    'Tugas & Deadline',
+    loading ? 'Memuat tugas dari PocketBase...' : `${openTaskCount} tugas terbuka · ${overdueCount} expired`,
+  )
 
   return (
     <div className="page-content">
@@ -84,6 +88,7 @@ export default function TasksPage() {
           </select>
         </label>
       </div>
+      {loading && <p className="empty-state">Memuat tugas...</p>}
       <p className="list-summary">
         {openTaskCount} tugas terbuka · {overdueCount} expired · task selesai disembunyikan.
       </p>
