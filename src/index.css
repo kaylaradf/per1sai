@@ -443,6 +443,30 @@ a {
   background: #f3f4f6;
 }
 
+.admin-course-table {
+  min-width: 0;
+  width: 100%;
+}
+
+.admin-course-table th:nth-child(2),
+.admin-course-table th:nth-child(3),
+.admin-course-table th:nth-child(4),
+.admin-course-table td:nth-child(2),
+.admin-course-table td:nth-child(3),
+.admin-course-table td:nth-child(4) {
+  width: 5.5rem;
+}
+
+.admin-course-table th:last-child,
+.admin-course-table td:last-child {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.admin-course-table .material-actions {
+  white-space: nowrap;
+}
+
 .type-chip {
   border: 2px solid #141414;
   padding: 0 0.25rem;
@@ -458,6 +482,9 @@ a {
   border: 2px solid #141414;
   box-shadow: 2px 2px 0 0 #141414;
   background: #fff;
+  color: #141414;
+  cursor: pointer;
+  font: inherit;
   padding: 0.15rem 0.45rem;
   font-size: 0.72rem;
 }
@@ -730,6 +757,138 @@ a {
   margin: 0;
   font-size: 0.9rem;
   line-height: 1.45;
+}
+
+.admin-shell {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: var(--desktop);
+}
+
+.admin-panel {
+  width: min(100%, 28rem);
+  border: 2px solid #141414;
+  background: var(--paper);
+  box-shadow: 4px 4px 0 0 #141414;
+  padding: 1rem;
+}
+
+.admin-panel--wide {
+  width: min(100%, 56rem);
+}
+
+.admin-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.admin-copy {
+  margin: 0.35rem 0 0;
+  line-height: 1.45;
+}
+
+.admin-form {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.admin-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.admin-error {
+  margin: 0;
+  padding: 0.6rem 0.75rem;
+  border: 2px solid #141414;
+  background: #fff1f1;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.admin-grid--semesters {
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+}
+
+.admin-grid--courses {
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+
+.admin-card {
+  border: 2px solid #141414;
+  padding: 0.85rem;
+  background: #fff;
+}
+
+.admin-card--interactive {
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.admin-card--interactive:hover,
+.admin-card--active {
+  background: #141414;
+  color: #fff;
+}
+
+.admin-card h2,
+.admin-card h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+}
+
+.admin-section + .admin-section {
+  margin-top: 1rem;
+}
+
+.admin-section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.admin-section-head--detail {
+  margin-top: 1rem;
+}
+
+.admin-semester-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 1rem;
+}
+
+.admin-semester-tab {
+  border: 2px solid #141414;
+  background: #fff;
+  padding: 0.35rem 0.7rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.admin-semester-tab.is-active {
+  background: #141414;
+  color: #fff;
+}
+
+.admin-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
 }
 
 .blog-detail blockquote {

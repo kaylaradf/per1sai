@@ -33,7 +33,7 @@ function BlogIcon() {
   )
 }
 
-const avatarUrl = 'https://manage.projectpop.xyz/api/files/pbc_3034895069/mmlyewa4t6f6qg7/background_border_9l62clvpdi.png?token='
+const avatarUrl = 'https://edodema.sirv.com/projectpop.xyz/noFilter.webp'
 
 export default function AboutPage() {
   const { data: creator, loading } = useAsyncData(() => getSiteSettings(), 'about', {
@@ -43,7 +43,7 @@ export default function AboutPage() {
       'Frontend archive interface berbasis React dengan gaya retro desktop untuk navigasi materi, tugas, jadwal, dan pengumuman.',
     blogUrl: 'https://your-blog.example',
     githubUrl: 'https://github.com/emaa/adata',
-    siteTitle: 'University Archive',
+    siteTitle: 'RKSC Adata',
   })
 
   useDesktopPageMeta('About', loading ? 'Memuat profil...' : 'Maintainer')

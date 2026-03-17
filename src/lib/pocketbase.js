@@ -1,6 +1,5 @@
-const DEFAULT_POCKETBASE_URL = 'https://manage.projectpop.xyz'
-
-export const pocketBaseUrl = (import.meta.env.VITE_POCKETBASE_URL || DEFAULT_POCKETBASE_URL).replace(/\/$/, '')
+export const pocketBaseUrl = import.meta.env.VITE_POCKETBASE_URL?.replace(/\/$/, '') || ''
+export const hasPocketBaseConfigured = Boolean(pocketBaseUrl)
 
 function buildQuery(params) {
   const query = new URLSearchParams()
@@ -15,6 +14,10 @@ function buildQuery(params) {
 }
 
 export async function listRecords(collectionName, params = {}) {
+  if (!hasPocketBaseConfigured) {
+    throw new Error(`PocketBase URL is not configured for ${collectionName}`)
+  }
+
   const query = buildQuery(params)
   const url = `${pocketBaseUrl}/api/collections/${collectionName}/records${query ? `?${query}` : ''}`
   const response = await fetch(url)
@@ -27,5 +30,9 @@ export async function listRecords(collectionName, params = {}) {
 }
 
 export function getFileUrl(record, fileName) {
+  if (!hasPocketBaseConfigured) {
+    return ''
+  }
+
   return `${pocketBaseUrl}/api/files/${record.collectionId}/${record.id}/${fileName}`
 }

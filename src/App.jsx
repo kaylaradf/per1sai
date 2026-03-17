@@ -1,7 +1,12 @@
 import { Navigate, RouterProvider, createHashRouter } from 'react-router-dom'
 import AboutPage from './pages/AboutPage'
+import AdminRoute from './components/AdminRoute'
 import DesktopLayout from './components/DesktopLayout'
+import { AdminAuthProvider } from './context/AdminAuthContext'
 import { DesktopMetaProvider } from './context/DesktopMetaContext'
+import AdminDashboardPage from './pages/AdminDashboardPage'
+import AdminLoginPage from './pages/AdminLoginPage'
+import AdminMaterialsPage from './pages/AdminMaterialsPage'
 import AnnouncementsPage from './pages/AnnouncementsPage'
 import CoursePage from './pages/CoursePage'
 import HomePage from './pages/HomePage'
@@ -12,6 +17,31 @@ import SemesterPage from './pages/SemesterPage'
 import TasksPage from './pages/TasksPage'
 
 const router = createHashRouter([
+  { path: '/admin/login', element: <AdminLoginPage /> },
+  {
+    path: '/admin',
+    element: (
+      <AdminRoute>
+        <AdminDashboardPage />
+      </AdminRoute>
+    ),
+  },
+  {
+    path: '/admin/materials',
+    element: (
+      <AdminRoute>
+        <AdminMaterialsPage />
+      </AdminRoute>
+    ),
+  },
+  {
+    path: '/admin/materials/semester/:semesterNumber',
+    element: (
+      <AdminRoute>
+        <AdminMaterialsPage />
+      </AdminRoute>
+    ),
+  },
   {
     element: <DesktopLayout />,
     children: [
@@ -38,9 +68,11 @@ const router = createHashRouter([
 
 function App() {
   return (
-    <DesktopMetaProvider>
-      <RouterProvider router={router} />
-    </DesktopMetaProvider>
+    <AdminAuthProvider>
+      <DesktopMetaProvider>
+        <RouterProvider router={router} />
+      </DesktopMetaProvider>
+    </AdminAuthProvider>
   )
 }
 

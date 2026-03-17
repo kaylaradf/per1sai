@@ -8,7 +8,7 @@ import {
   getSemesters as getSemestersFallback,
   getTasks as getTasksFallback,
 } from './mockDb'
-import { getFileUrl, listRecords } from '../lib/pocketbase'
+import { getFileUrl, hasPocketBaseConfigured, listRecords } from '../lib/pocketbase'
 
 const weekdays = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
 
@@ -102,6 +102,10 @@ function createMockArchiveTree() {
 }
 
 async function loadArchiveTree() {
+  if (!hasPocketBaseConfigured) {
+    return createMockArchiveTree()
+  }
+
   if (!archiveTreePromise) {
     archiveTreePromise = (async () => {
       const [semesterResponse, courseResponse, materialResponse] = await Promise.all([
@@ -223,6 +227,10 @@ async function loadArchiveTree() {
 }
 
 async function loadTasks() {
+  if (!hasPocketBaseConfigured) {
+    return getTasksFallback()
+  }
+
   if (!tasksPromise) {
     tasksPromise = listRecords('tasks', { perPage: 200, expand: 'course,semester' })
       .then((response) => {
@@ -263,6 +271,10 @@ function parseTimeRange(value) {
 }
 
 async function loadSchedule() {
+  if (!hasPocketBaseConfigured) {
+    return getScheduleFallback()
+  }
+
   if (!schedulePromise) {
     schedulePromise = listRecords('schedule', { perPage: 200, expand: 'course,semester' })
       .then((response) => {
@@ -292,6 +304,14 @@ async function loadSchedule() {
 }
 
 async function loadAnnouncements() {
+  if (!hasPocketBaseConfigured) {
+    return {
+      items: getAnnouncementsSeedFallback(),
+      source: 'mock',
+      stream: getAnnouncementStreamFallback(),
+    }
+  }
+
   if (!announcementsPromise) {
     announcementsPromise = listRecords('announcements', { perPage: 200, sort: '-published_at' })
       .then((response) => {
@@ -326,6 +346,10 @@ async function loadAnnouncements() {
 }
 
 async function loadSiteSettings() {
+  if (!hasPocketBaseConfigured) {
+    return defaultSiteSettings
+  }
+
   if (!siteSettingsPromise) {
     siteSettingsPromise = listRecords('site_settings', { perPage: 1 })
       .then((response) => {
