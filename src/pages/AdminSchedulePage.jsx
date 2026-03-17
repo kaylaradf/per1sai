@@ -34,6 +34,7 @@ export default function AdminSchedulePage() {
   const { auth } = useAdminAuth()
   const [refreshSeed, setRefreshSeed] = useState(0)
   const [selectedSemesterId, setSelectedSemesterId] = useState('')
+  const [draftSchedules, setDraftSchedules] = useState({})
   const [editingId, setEditingId] = useState('')
   const [draggingId, setDraggingId] = useState('')
   const [dropTargetKey, setDropTargetKey] = useState('')
@@ -92,12 +93,49 @@ export default function AdminSchedulePage() {
     () => data.entries.filter((entry) => entry.semesterId === selectedSemesterId),
     [data.entries, selectedSemesterId],
   )
-  const grid = useMemo(() => groupScheduleIntoGrid(semesterEntries), [semesterEntries])
+  const activeScheduleEntries = draftSchedules[selectedSemesterId]?.items || semesterEntries
+  const grid = useMemo(() => groupScheduleIntoGrid(activeScheduleEntries), [activeScheduleEntries])
   const slotOptions = useMemo(() => getScheduleSlotOptions(), [])
   const availableCourses = useMemo(
     () => filterCoursesBySemester(data.courses, form.semesterId || selectedSemesterId),
     [data.courses, form.semesterId, selectedSemesterId],
   )
+  const draftChanges = useMemo(() => {
+    const originalMap = new Map(semesterEntries.map((entry) => [entry.id, entry]))
+
+    return activeScheduleEntries.filter((entry) => {
+      const original = originalMap.get(entry.id)
+
+      return (
+        original &&
+        (original.dayOfWeek !== entry.dayOfWeek ||
+          original.startTime !== entry.startTime ||
+          original.endTime !== entry.endTime)
+      )
+    })
+  }, [activeScheduleEntries, semesterEntries])
+
+  useEffect(() => {
+    if (!selectedSemesterId) {
+      return
+    }
+
+    setDraftSchedules((current) => {
+      const existing = current[selectedSemesterId]
+
+      if (existing?.dirty) {
+        return current
+      }
+
+      return {
+        ...current,
+        [selectedSemesterId]: {
+          dirty: false,
+          items: semesterEntries,
+        },
+      }
+    })
+  }, [selectedSemesterId, semesterEntries])
 
   function resetForm() {
     setEditingId('')
@@ -150,6 +188,18 @@ export default function AdminSchedulePage() {
     setIsFormOpen(true)
   }
 
+  function resetDraftLayout() {
+    setDraftSchedules((current) => ({
+      ...current,
+      [selectedSemesterId]: {
+        dirty: false,
+        items: semesterEntries,
+      },
+    }))
+    setDraggingId('')
+    setDropTargetKey('')
+  }
+
   async function handleSubmit(event) {
     event.preventDefault()
 
@@ -193,6 +243,13 @@ export default function AdminSchedulePage() {
         await createAdminRecord('schedule', auth.token, payload)
       }
 
+      setDraftSchedules((current) => ({
+        ...current,
+        [form.semesterId || selectedSemesterId]: {
+          dirty: false,
+          items: [],
+        },
+      }))
       closeFormModal()
       setRefreshSeed((value) => value + 1)
     } catch (submitError) {
@@ -217,6 +274,13 @@ export default function AdminSchedulePage() {
         closeFormModal()
       }
 
+      setDraftSchedules((current) => ({
+        ...current,
+        [pendingDelete.semesterId || selectedSemesterId]: {
+          dirty: false,
+          items: [],
+        },
+      }))
       setPendingDelete(null)
       setRefreshSeed((value) => value + 1)
     } catch (deleteError) {
@@ -254,6 +318,13 @@ export default function AdminSchedulePage() {
         subject: course?.code || course?.name || '',
         time: `${form.startTime} - ${form.endTime}`,
       })
+      setDraftSchedules((current) => ({
+        ...current,
+        [form.semesterId || selectedSemesterId]: {
+          dirty: false,
+          items: [],
+        },
+      }))
       setRefreshSeed((value) => value + 1)
     } catch (duplicateError) {
       setFormError(duplicateError.message || 'Gagal duplicate entry')
@@ -273,41 +344,42 @@ export default function AdminSchedulePage() {
       return
     }
 
-    setSubmitting(true)
     setFormError('')
 
-    try {
-      await updateAdminRecord('schedule', entry.id, auth.token, {
-        class_type: entry.classType,
-        course: entry.courseId,
-        day_of_week: Number(dayOfWeek),
-        end_time: endTime,
-        is_active: entry.isActive,
-        lecturer: entry.lecturer.trim(),
-        room: entry.room.trim(),
-        semester: entry.semesterId,
-        start_time: startTime,
-        subject: entry.courseCode || entry.courseName || entry.subject || '',
-        time: `${startTime} - ${endTime}`,
-      })
+    setDraftSchedules((current) => {
+      const currentSemesterDraft = current[selectedSemesterId]?.items || semesterEntries
+      const nextItems = currentSemesterDraft.map((item) =>
+        item.id === entry.id
+          ? {
+              ...item,
+              dayOfWeek,
+              endTime,
+              startTime,
+              timeRange: `${startTime} - ${endTime}`,
+            }
+          : item,
+      )
 
-      if (editingId === entry.id) {
-        setForm((current) => ({
-          ...current,
-          dayOfWeek: String(dayOfWeek),
-          endTime,
-          startTime,
-        }))
+      return {
+        ...current,
+        [selectedSemesterId]: {
+          dirty: true,
+          items: nextItems,
+        },
       }
+    })
 
-      setRefreshSeed((value) => value + 1)
-    } catch (moveError) {
-      setFormError(moveError.message || 'Gagal memindahkan entry jadwal')
-    } finally {
-      setSubmitting(false)
-      setDraggingId('')
-      setDropTargetKey('')
+    if (editingId === entry.id) {
+      setForm((current) => ({
+        ...current,
+        dayOfWeek: String(dayOfWeek),
+        endTime,
+        startTime,
+      }))
     }
+
+    setDraggingId('')
+    setDropTargetKey('')
   }
 
   function handleDragStart(entry) {
@@ -342,9 +414,53 @@ export default function AdminSchedulePage() {
     event.preventDefault()
 
     const draggedId = event.dataTransfer.getData('text/plain')
-    const entry = semesterEntries.find((item) => item.id === draggedId)
+    const entry = activeScheduleEntries.find((item) => item.id === draggedId)
 
     void handleMoveEntry(entry, dayOfWeek, startTime, endTime)
+  }
+
+  async function saveDraftLayout() {
+    if (!draftChanges.length) {
+      return
+    }
+
+    setSubmitting(true)
+    setFormError('')
+
+    try {
+      await Promise.all(
+        draftChanges.map((entry) =>
+          updateAdminRecord('schedule', entry.id, auth.token, {
+            class_type: entry.classType,
+            course: entry.courseId,
+            day_of_week: Number(entry.dayOfWeek),
+            end_time: entry.endTime,
+            is_active: entry.isActive,
+            lecturer: entry.lecturer.trim(),
+            room: entry.room.trim(),
+            semester: entry.semesterId,
+            start_time: entry.startTime,
+            subject: entry.courseCode || entry.courseName || entry.subject || '',
+            time: `${entry.startTime} - ${entry.endTime}`,
+          }),
+        ),
+      )
+
+      setDraftSchedules((current) => ({
+        ...current,
+        [selectedSemesterId]: {
+          dirty: false,
+          items: activeScheduleEntries,
+        },
+      }))
+      setRefreshSeed((value) => value + 1)
+    } catch (saveError) {
+      setFormError(saveError.message || 'Gagal menyimpan draft jadwal')
+    } finally {
+      setSubmitting(false)
+      setDraggingId('')
+      setDropTargetKey('')
+    }
   }
 
   return (
@@ -368,11 +484,25 @@ export default function AdminSchedulePage() {
           <div className="admin-section-head">
             <div>
               <h2>Grid Jadwal</h2>
-              <p className="admin-copy">Klik cell kosong untuk quick add, atau klik entry untuk edit.</p>
+              <p className="admin-copy">
+                Klik cell kosong untuk quick add, klik entry untuk edit, atau drag card ke slot lain lalu simpan draft.
+              </p>
             </div>
-            <button type="button" className="action-btn" onClick={openBlankCreate}>
-              Tambah Entry
-            </button>
+            <div className="admin-inline-actions">
+              <button type="button" className="action-btn" onClick={openBlankCreate}>
+                Tambah Entry
+              </button>
+              {draftChanges.length > 0 && (
+                <>
+                  <button type="button" className="ghost-btn" onClick={resetDraftLayout} disabled={submitting}>
+                    Reset Draft
+                  </button>
+                  <button type="button" className="action-btn" onClick={saveDraftLayout} disabled={submitting}>
+                    {submitting ? 'Updating...' : `Update Entry (${draftChanges.length})`}
+                  </button>
+                </>
+              )}
+            </div>
           </div>
 
           <div className="day-tabs">
