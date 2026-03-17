@@ -5,6 +5,14 @@ export function normalizeCategory(value) {
   return String(value || '').toLowerCase().includes('prakt') ? 'praktikum' : 'teori'
 }
 
+function slugifyCourseValue(value) {
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+}
+
 function formatCategoryLabel(category) {
   return category === 'praktikum' ? 'Praktikum' : 'Teori'
 }
@@ -216,4 +224,20 @@ export async function updateAdminMaterial(token, recordId, input) {
 
 export async function deleteAdminMaterial(token, recordId) {
   return deleteAdminRecord('materials', recordId, token)
+}
+
+export async function createAdminCourse(token, { code, name, overview, semesterRecordId }) {
+  const normalizedName = name.trim()
+  const normalizedCode = code.trim().toUpperCase()
+  const slugSource = normalizedCode || normalizedName
+
+  return createAdminRecord('courses', token, {
+    code: normalizedCode,
+    is_active: true,
+    name: normalizedName,
+    overview: overview.trim(),
+    semester: semesterRecordId,
+    slug: slugifyCourseValue(slugSource),
+    url: '',
+  })
 }

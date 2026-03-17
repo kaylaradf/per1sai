@@ -1,15 +1,30 @@
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import AdminRetroWindow from '../components/AdminRetroWindow'
 import { useAdminAuth } from '../context/adminAuthStore'
 import useAsyncData from '../hooks/useAsyncData'
-import { fetchAdminMaterialsOverview } from '../lib/adminMaterials'
+import { createAdminCourse, fetchAdminMaterialsOverview } from '../lib/adminMaterials'
+
+function createEmptyCourseForm() {
+  return {
+    code: '',
+    name: '',
+    overview: '',
+  }
+}
 
 export default function AdminMaterialsPage() {
   const { auth } = useAdminAuth()
   const { semesterNumber } = useParams()
   const activeSemesterNumber = Number(semesterNumber) || 0
+  const [refreshSeed, setRefreshSeed] = useState(0)
+  const [showCreateCourseModal, setShowCreateCourseModal] = useState(false)
+  const [courseForm, setCourseForm] = useState(createEmptyCourseForm)
+  const [courseFormError, setCourseFormError] = useState('')
+  const [creatingCourse, setCreatingCourse] = useState(false)
   const { data, loading, error } = useAsyncData(
     () => fetchAdminMaterialsOverview(auth.token),
-    `admin-materials:${auth?.record?.id || 'guest'}`,
+    `admin-materials:${auth?.record?.id || 'guest'}:${refreshSeed}`,
     {
       materialGroups: [],
       totalCourses: 0,
@@ -19,6 +34,45 @@ export default function AdminMaterialsPage() {
 
   const activeSemester =
     data.materialGroups.find((semester) => semester.number === activeSemesterNumber) || data.materialGroups[0]
+
+  function handleOpenCreateCourseModal() {
+    setCourseForm(createEmptyCourseForm())
+    setCourseFormError('')
+    setShowCreateCourseModal(true)
+  }
+
+  async function handleCreateCourse(event) {
+    event.preventDefault()
+
+    if (!activeSemester?.semesterRecordId) {
+      setCourseFormError('Semester record tidak ditemukan.')
+      return
+    }
+
+    if (!courseForm.name.trim() || !courseForm.code.trim()) {
+      setCourseFormError('Nama mata kuliah dan kode mata kuliah wajib diisi.')
+      return
+    }
+
+    setCreatingCourse(true)
+    setCourseFormError('')
+
+    try {
+      await createAdminCourse(auth.token, {
+        code: courseForm.code,
+        name: courseForm.name,
+        overview: courseForm.overview,
+        semesterRecordId: activeSemester.semesterRecordId,
+      })
+      setShowCreateCourseModal(false)
+      setCourseForm(createEmptyCourseForm())
+      setRefreshSeed((value) => value + 1)
+    } catch (submitError) {
+      setCourseFormError(submitError.message || 'Gagal membuat mata kuliah baru')
+    } finally {
+      setCreatingCourse(false)
+    }
+  }
 
   if (activeSemesterNumber > 0) {
     return (
@@ -40,7 +94,12 @@ export default function AdminMaterialsPage() {
 
           {error && <p className="admin-error">{error.message}</p>}
 
-          <p className="list-summary">Pilih mata kuliah untuk turun ke kontrol materi teori dan praktikum.</p>
+          <div className="admin-section-head admin-section-head--detail">
+            <p className="list-summary">Pilih mata kuliah untuk turun ke kontrol materi teori dan praktikum.</p>
+            <button type="button" className="action-btn" onClick={handleOpenCreateCourseModal}>
+              Tambah Mata Kuliah
+            </button>
+          </div>
 
           {loading ? (
             <p className="empty-state">Memuat daftar mata kuliah...</p>
@@ -112,9 +171,70 @@ export default function AdminMaterialsPage() {
               </div>
             </>
           ) : (
-            <p className="empty-state">Belum ada mata kuliah untuk semester ini.</p>
+            <div className="page-content">
+              <p className="empty-state">Belum ada mata kuliah untuk semester ini.</p>
+              <button type="button" className="action-btn" onClick={handleOpenCreateCourseModal}>
+                Tambah Mata Kuliah
+              </button>
+            </div>
           )}
         </section>
+        {showCreateCourseModal ? (
+          <AdminRetroWindow
+            title={`Tambah Mata Kuliah · ${activeSemester?.name || `Semester ${activeSemesterNumber}`}`}
+            onClose={() => {
+              if (!creatingCourse) {
+                setShowCreateCourseModal(false)
+              }
+            }}
+            footer={
+              <div className="admin-inline-actions">
+                <button
+                  type="button"
+                  className="ghost-btn"
+                  disabled={creatingCourse}
+                  onClick={() => setShowCreateCourseModal(false)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" form="create-course-form" className="action-btn" disabled={creatingCourse}>
+                  {creatingCourse ? 'Menyimpan...' : 'Buat Mata Kuliah'}
+                </button>
+              </div>
+            }
+          >
+            {courseFormError ? <p className="admin-error">{courseFormError}</p> : null}
+            <form id="create-course-form" className="admin-form" onSubmit={handleCreateCourse}>
+              <label className="admin-field">
+                <span>Nama Mata Kuliah</span>
+                <input
+                  type="text"
+                  value={courseForm.name}
+                  onChange={(event) => setCourseForm((current) => ({ ...current, name: event.target.value }))}
+                  required
+                />
+              </label>
+              <label className="admin-field">
+                <span>Kode Mata Kuliah</span>
+                <input
+                  type="text"
+                  value={courseForm.code}
+                  onChange={(event) => setCourseForm((current) => ({ ...current, code: event.target.value }))}
+                  required
+                />
+              </label>
+              <label className="admin-field admin-field--full">
+                <span>Overview</span>
+                <textarea
+                  rows="4"
+                  value={courseForm.overview}
+                  onChange={(event) => setCourseForm((current) => ({ ...current, overview: event.target.value }))}
+                />
+              </label>
+              <p className="admin-copy">Course baru akan dibuat dengan status aktif secara default.</p>
+            </form>
+          </AdminRetroWindow>
+        ) : null}
       </main>
     )
   }
