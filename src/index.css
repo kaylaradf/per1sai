@@ -34,6 +34,90 @@ a {
   flex-direction: column;
 }
 
+.daily-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: #cccccc;
+}
+
+.daily-splash__panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: min(100%, 28rem);
+  animation: daily-splash-float 1.8s ease-in-out infinite;
+}
+
+.daily-splash__stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.daily-splash__visual {
+  width: min(100%, 24rem);
+  height: auto;
+  display: block;
+  transform-origin: center;
+  animation: daily-splash-hourglass 1.15s ease-in-out infinite;
+}
+
+.daily-splash__label {
+  margin: 0;
+  font-size: 0.88rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  animation: daily-splash-blink 1s steps(2, end) infinite;
+}
+
+@keyframes daily-splash-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes daily-splash-hourglass {
+  0%,
+  100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+
+  20% {
+    transform: translateY(-2px) scale(1.02) rotate(-1deg);
+  }
+
+  50% {
+    transform: translateY(1px) scale(0.995) rotate(1deg);
+  }
+
+  80% {
+    transform: translateY(-1px) scale(1.015) rotate(-0.6deg);
+  }
+}
+
+@keyframes daily-splash-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.45;
+  }
+}
+
 .top-nav {
   background: var(--paper);
   border-bottom: 2px solid #000;
@@ -417,6 +501,96 @@ a {
 .text-link {
   font-size: 0.8rem;
   text-decoration: underline;
+}
+
+.error-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 1rem;
+  align-items: center;
+  padding: 0;
+  background: transparent;
+}
+
+.error-visual-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.error-visual {
+  width: 100%;
+  max-width: 17rem;
+  height: auto;
+  display: block;
+}
+
+.error-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+  align-items: flex-start;
+}
+
+.error-code,
+.error-title,
+.error-message,
+.error-meta {
+  margin: 0;
+}
+
+.error-code {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.error-title {
+  font-size: 1.6rem;
+  line-height: 0.95;
+}
+
+.error-message {
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 0.25rem;
+}
+
+.action-btn--ghost {
+  box-shadow: none;
+}
+
+.route-error-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: var(--desktop);
+}
+
+.route-error-shell--admin {
+  background: #efefef;
+}
+
+.route-error-window {
+  width: min(100%, 44rem);
+  background: #fff;
+  border: 2px solid #141414;
+  box-shadow: 4px 4px 0 0 #141414;
+}
+
+.error-meta {
+  margin-top: 0.85rem;
+  font-size: 0.76rem;
 }
 
 .materials-table-wrap {
@@ -1347,6 +1521,14 @@ a {
     padding: 0.75rem;
   }
 
+  .daily-splash {
+    padding: 0.85rem;
+  }
+
+  .daily-splash__visual {
+    width: min(100%, 19rem);
+  }
+
   .folder-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
@@ -1458,6 +1640,14 @@ a {
     min-height: 100%;
     scroll-snap-align: start;
   }
+
+  .error-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .error-visual {
+    max-width: 14rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1471,5 +1661,17 @@ a {
 
   .window-header {
     gap: 0.3rem;
+  }
+
+  .route-error-shell {
+    padding: 0.7rem;
+  }
+
+  .error-panel {
+    padding: 0.75rem;
+  }
+
+  .error-title {
+    font-size: 1.35rem;
   }
 }

@@ -17,14 +17,16 @@ import CoursePage from './pages/CoursePage'
 import HomePage from './pages/HomePage'
 import MaterialsPage from './pages/MaterialsPage'
 import NotFoundPage from './pages/NotFoundPage'
+import RouteErrorPage from './pages/RouteErrorPage'
 import SchedulePage from './pages/SchedulePage'
 import SemesterPage from './pages/SemesterPage'
 import TasksPage from './pages/TasksPage'
 
 const router = createHashRouter([
-  { path: '/admin/login', element: <AdminLoginPage /> },
+  { path: '/admin/login', element: <AdminLoginPage />, errorElement: <RouteErrorPage mode="admin" /> },
   {
     path: '/admin',
+    errorElement: <RouteErrorPage mode="admin" />,
     element: (
       <AdminRoute>
         <AdminDashboardPage />
@@ -33,6 +35,7 @@ const router = createHashRouter([
   },
   {
     path: '/admin/materials',
+    errorElement: <RouteErrorPage mode="admin" />,
     element: (
       <AdminRoute>
         <AdminMaterialsPage />
@@ -41,6 +44,7 @@ const router = createHashRouter([
   },
   {
     path: '/admin/materials/semester/:semesterNumber',
+    errorElement: <RouteErrorPage mode="admin" />,
     element: (
       <AdminRoute>
         <AdminMaterialsPage />
@@ -49,6 +53,7 @@ const router = createHashRouter([
   },
   {
     path: '/admin/materials/semester/:semesterNumber/course/:courseId/:category',
+    errorElement: <RouteErrorPage mode="admin" />,
     element: (
       <AdminRoute>
         <AdminMaterialManagerPage />
@@ -57,6 +62,7 @@ const router = createHashRouter([
   },
   {
     path: '/admin/announcements',
+    errorElement: <RouteErrorPage mode="admin" />,
     element: (
       <AdminRoute>
         <AdminAnnouncementsPage />
@@ -65,6 +71,7 @@ const router = createHashRouter([
   },
   {
     path: '/admin/tasks',
+    errorElement: <RouteErrorPage mode="admin" />,
     element: (
       <AdminRoute>
         <AdminTasksPage />
@@ -73,6 +80,7 @@ const router = createHashRouter([
   },
   {
     path: '/admin/settings',
+    errorElement: <RouteErrorPage mode="admin" />,
     element: (
       <AdminRoute>
         <AdminSettingsPage />
@@ -81,6 +89,7 @@ const router = createHashRouter([
   },
   {
     path: '/admin/schedule',
+    errorElement: <RouteErrorPage mode="admin" />,
     element: (
       <AdminRoute>
         <AdminSchedulePage />
@@ -89,6 +98,7 @@ const router = createHashRouter([
   },
   {
     element: <DesktopLayout />,
+    errorElement: <RouteErrorPage />,
     children: [
       { index: true, element: <HomePage /> },
       { path: '/semester/:semesterId', element: <SemesterPage /> },

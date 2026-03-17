@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import DailySplashOverlay from './DailySplashOverlay'
 import { useDesktopMeta } from '../context/desktopMetaStore'
 
 const navItems = [
@@ -8,6 +9,15 @@ const navItems = [
   { label: 'Pengumuman', to: '/announcements' },
   { label: 'About', to: '/about' },
 ]
+const dailySplashStorageKey = 'archive-daily-splash'
+
+function getTodayStorageValue() {
+  const today = new Date()
+  const year = today.getFullYear()
+  const month = String(today.getMonth() + 1).padStart(2, '0')
+  const day = String(today.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
 
 function formatClock(date) {
   return new Intl.DateTimeFormat('id-ID', {
@@ -20,6 +30,26 @@ export default function DesktopLayout() {
   const location = useLocation()
   const navigate = useNavigate()
   const [clock, setClock] = useState(() => new Date())
+  const [showDailySplash, setShowDailySplash] = useState(() => {
+    if (typeof window === 'undefined') {
+      return false
+    }
+
+    const todayValue = getTodayStorageValue()
+
+    try {
+      const lastSeenValue = window.localStorage.getItem(dailySplashStorageKey)
+
+      if (lastSeenValue === todayValue) {
+        return false
+      }
+
+      window.localStorage.setItem(dailySplashStorageKey, todayValue)
+      return true
+    } catch {
+      return true
+    }
+  })
   const { meta } = useDesktopMeta()
 
   useEffect(() => {
@@ -29,6 +59,18 @@ export default function DesktopLayout() {
 
     return () => window.clearInterval(timer)
   }, [])
+
+  useEffect(() => {
+    if (!showDailySplash) {
+      return undefined
+    }
+
+    const timer = window.setTimeout(() => {
+      setShowDailySplash(false)
+    }, 2200)
+
+    return () => window.clearTimeout(timer)
+  }, [showDailySplash])
 
   const handleWindowClose = () => {
     if (location.pathname === '/') {
@@ -40,6 +82,7 @@ export default function DesktopLayout() {
 
   return (
     <div className="desktop-app">
+      {showDailySplash ? <DailySplashOverlay onClose={() => setShowDailySplash(false)} /> : null}
       <nav className="top-nav" data-purpose="top-navigation">
         <button className="brand-mark" type="button" onClick={() => navigate('/')} aria-label="Go home">
           <svg fill="currentColor" height="16" viewBox="0 0 24 24" width="16" aria-hidden="true">
