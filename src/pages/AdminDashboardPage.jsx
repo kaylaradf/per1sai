@@ -6,10 +6,10 @@ import { fetchAdminCollection } from '../lib/adminAuth'
 import { fetchAdminMaterialsOverview } from '../lib/adminMaterials'
 
 const managementCollections = [
-  { id: 'schedule', label: 'Schedule' },
-  { id: 'tasks', label: 'Tasks' },
-  { id: 'announcements', label: 'Announcements' },
-  { id: 'site_settings', label: 'Site Settings' },
+  { id: 'schedule', label: 'Schedule', to: '/admin/schedule' },
+  { id: 'tasks', label: 'Tasks', to: '/admin/tasks' },
+  { id: 'announcements', label: 'Announcements', to: '/admin/announcements' },
+  { id: 'site_settings', label: 'Site Settings', to: '/admin/settings' },
 ]
 
 export default function AdminDashboardPage() {
@@ -84,11 +84,11 @@ export default function AdminDashboardPage() {
               <p className="task-meta">Klik untuk membuka daftar semester, lalu turun ke daftar mata kuliah.</p>
             </Link>
             {data.summaries.map((collection) => (
-              <article key={collection.id} className="admin-card">
+              <Link key={collection.id} to={collection.to} className="admin-card admin-card--interactive">
                 <h3>{collection.label}</h3>
                 <p>{loading ? 'Loading...' : `${collection.total ?? 0} records`}</p>
-                <p className="task-meta">CRUD UI belum dipasang, tapi auth, guard, dan koneksi admin sudah siap.</p>
-              </article>
+                <p className="task-meta">Klik untuk membuka halaman CRUD {collection.label.toLowerCase()}.</p>
+              </Link>
             ))}
           </div>
         </section>

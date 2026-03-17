@@ -788,6 +788,10 @@ a {
   width: min(100%, 56rem);
 }
 
+.admin-panel--xwide {
+  width: min(100%, 74rem);
+}
+
 .admin-header {
   display: flex;
   align-items: flex-start;
@@ -896,6 +900,18 @@ a {
   margin-top: 1rem;
 }
 
+.admin-toolbar {
+  align-items: end;
+}
+
+.admin-toolbar--multi {
+  grid-template-columns: minmax(0, 1.4fr) repeat(4, minmax(8rem, 0.7fr));
+}
+
+.admin-toolbar-action {
+  min-height: 2.2rem;
+}
+
 .admin-grid--semesters {
   grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
 }
@@ -970,6 +986,27 @@ a {
   margin-top: 0.75rem;
 }
 
+.admin-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.admin-status-chip {
+  display: inline-flex;
+  align-items: center;
+  border: 2px solid #141414;
+  background: #fff;
+  padding: 0.2rem 0.45rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.admin-status-chip--danger {
+  border-color: #9f1d1d;
+  color: #9f1d1d;
+}
+
 .admin-materials-table {
   min-width: 0;
 }
@@ -1002,6 +1039,116 @@ a {
   color: #373737;
 }
 
+.admin-announcements-table,
+.admin-tasks-table {
+  min-width: 0;
+}
+
+.admin-announcements-table th:nth-child(2),
+.admin-announcements-table th:nth-child(3),
+.admin-announcements-table th:nth-child(4),
+.admin-announcements-table th:nth-child(5),
+.admin-announcements-table td:nth-child(2),
+.admin-announcements-table td:nth-child(3),
+.admin-announcements-table td:nth-child(4),
+.admin-announcements-table td:nth-child(5),
+.admin-tasks-table th:nth-child(5),
+.admin-tasks-table th:nth-child(6),
+.admin-tasks-table th:nth-child(7),
+.admin-tasks-table td:nth-child(5),
+.admin-tasks-table td:nth-child(6),
+.admin-tasks-table td:nth-child(7) {
+  width: 6.5rem;
+}
+
+.admin-announcements-table th:last-child,
+.admin-announcements-table td:last-child,
+.admin-tasks-table th:last-child,
+.admin-tasks-table td:last-child {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.admin-schedule-wrap {
+  margin-top: 1rem;
+  border: 2px solid #141414;
+  overflow: auto;
+}
+
+.admin-schedule-table {
+  width: 100%;
+  min-width: 54rem;
+  border-collapse: collapse;
+  font-size: 0.76rem;
+}
+
+.admin-schedule-table th,
+.admin-schedule-table td {
+  border-bottom: 1px solid #141414;
+  border-right: 1px solid #141414;
+  vertical-align: top;
+  padding: 0.45rem;
+}
+
+.admin-schedule-table th:last-child,
+.admin-schedule-table td:last-child {
+  border-right: 0;
+}
+
+.admin-schedule-table th {
+  background: #f3f4f6;
+}
+
+.admin-schedule-time {
+  width: 7rem;
+  white-space: nowrap;
+}
+
+.admin-schedule-cell {
+  min-width: 10rem;
+}
+
+.admin-schedule-stack {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.admin-schedule-empty {
+  border: 1px dashed #141414;
+  background: #fff;
+  color: #141414;
+  width: 100%;
+  margin-bottom: 0.35rem;
+  padding: 0.2rem 0.3rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.admin-schedule-entry {
+  display: grid;
+  gap: 0.1rem;
+  width: 100%;
+  border: 2px solid #141414;
+  background: #fff;
+  padding: 0.35rem;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.admin-schedule-entry strong {
+  font-size: 0.74rem;
+}
+
+.admin-schedule-entry span {
+  font-size: 0.68rem;
+  line-height: 1.35;
+}
+
+.admin-schedule-entry.is-muted {
+  opacity: 0.55;
+}
+
 .blog-detail blockquote {
   margin: 0.6rem 0;
   border-left: 3px solid #141414;
@@ -1031,6 +1178,10 @@ a {
 
   .toolbar {
     grid-template-columns: 1fr;
+  }
+
+  .admin-toolbar--multi {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .admin-form--materials {
@@ -1164,6 +1315,10 @@ a {
     padding: 0.12rem 0.38rem;
     font-size: 0.66rem;
     box-shadow: 1px 1px 0 0 #141414;
+  }
+
+  .admin-toolbar--multi {
+    grid-template-columns: 1fr;
   }
 
   .profile-card-body {

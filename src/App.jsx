@@ -5,9 +5,13 @@ import DesktopLayout from './components/DesktopLayout'
 import { AdminAuthProvider } from './context/AdminAuthContext'
 import { DesktopMetaProvider } from './context/DesktopMetaContext'
 import AdminDashboardPage from './pages/AdminDashboardPage'
+import AdminAnnouncementsPage from './pages/AdminAnnouncementsPage'
 import AdminLoginPage from './pages/AdminLoginPage'
 import AdminMaterialManagerPage from './pages/AdminMaterialManagerPage'
 import AdminMaterialsPage from './pages/AdminMaterialsPage'
+import AdminSchedulePage from './pages/AdminSchedulePage'
+import AdminSettingsPage from './pages/AdminSettingsPage'
+import AdminTasksPage from './pages/AdminTasksPage'
 import AnnouncementsPage from './pages/AnnouncementsPage'
 import CoursePage from './pages/CoursePage'
 import HomePage from './pages/HomePage'
@@ -48,6 +52,38 @@ const router = createHashRouter([
     element: (
       <AdminRoute>
         <AdminMaterialManagerPage />
+      </AdminRoute>
+    ),
+  },
+  {
+    path: '/admin/announcements',
+    element: (
+      <AdminRoute>
+        <AdminAnnouncementsPage />
+      </AdminRoute>
+    ),
+  },
+  {
+    path: '/admin/tasks',
+    element: (
+      <AdminRoute>
+        <AdminTasksPage />
+      </AdminRoute>
+    ),
+  },
+  {
+    path: '/admin/settings',
+    element: (
+      <AdminRoute>
+        <AdminSettingsPage />
+      </AdminRoute>
+    ),
+  },
+  {
+    path: '/admin/schedule',
+    element: (
+      <AdminRoute>
+        <AdminSchedulePage />
       </AdminRoute>
     ),
   },
