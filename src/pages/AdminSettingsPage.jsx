@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAdminAuth } from '../context/adminAuthStore'
 import useAsyncData from '../hooks/useAsyncData'
 import { createAdminRecord, fetchAdminCollection, updateAdminRecord } from '../lib/adminAuth'
+import { isSafeHttpUrl, normalizeSafeExternalUrl } from '../lib/urlSafety'
 
 function createEmptyForm() {
   return {
@@ -12,19 +13,6 @@ function createEmptyForm() {
     blogUrl: '',
     githubUrl: '',
     siteTitle: '',
-  }
-}
-
-function isValidOptionalUrl(value) {
-  if (!value.trim()) {
-    return true
-  }
-
-  try {
-    new URL(value)
-    return true
-  } catch {
-    return false
   }
 }
 
@@ -72,8 +60,8 @@ export default function AdminSettingsPage() {
   async function handleSubmit(event) {
     event.preventDefault()
 
-    if (!isValidOptionalUrl(form.githubUrl) || !isValidOptionalUrl(form.blogUrl)) {
-      setFormError('GitHub URL dan Blog URL harus berupa URL valid.')
+    if (!isSafeHttpUrl(form.githubUrl) || !isSafeHttpUrl(form.blogUrl)) {
+      setFormError('GitHub URL dan Blog URL harus berupa URL valid dengan protokol http:// atau https://.')
       return
     }
 
@@ -85,8 +73,8 @@ export default function AdminSettingsPage() {
         about_name: form.aboutName.trim(),
         about_role: form.aboutRole.trim(),
         about_summary: form.aboutSummary.trim(),
-        blog_url: form.blogUrl.trim(),
-        github_url: form.githubUrl.trim(),
+        blog_url: normalizeSafeExternalUrl(form.blogUrl),
+        github_url: normalizeSafeExternalUrl(form.githubUrl),
         site_title: form.siteTitle.trim(),
       }
 
@@ -184,4 +172,3 @@ export default function AdminSettingsPage() {
     </main>
   )
 }
-

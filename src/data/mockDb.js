@@ -346,13 +346,11 @@ const announcementStream = Array.from({ length: 10 }, (_, index) => {
   }
 })
 
-function buildBlogContent(paragraphs, bullets) {
-  return `
-    ${paragraphs.map((paragraph) => `<p>${paragraph}</p>`).join('')}
-    <ul>
-      ${bullets.map((bullet) => `<li>${bullet}</li>`).join('')}
-    </ul>
-  `
+function buildBlogContentBlocks(paragraphs, bullets) {
+  return {
+    bullets,
+    paragraphs,
+  }
 }
 
 const blogPosts = blogBlueprints.map((post, index) => ({
@@ -361,7 +359,7 @@ const blogPosts = blogBlueprints.map((post, index) => ({
   title: post.title,
   createdAt: dateAfter(-(index * 4 + 3)),
   excerpt: post.excerpt,
-  content: buildBlogContent(post.paragraphs, post.bullets),
+  contentBlocks: buildBlogContentBlocks(post.paragraphs, post.bullets),
 }))
 
 export function getSemesters() {

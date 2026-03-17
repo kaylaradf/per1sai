@@ -2,6 +2,7 @@ import Breadcrumbs from '../components/Breadcrumbs'
 import { getSiteSettings } from '../data/archiveApi'
 import useAsyncData from '../hooks/useAsyncData'
 import useDesktopPageMeta from '../hooks/useDesktopPageMeta'
+import { normalizeSafeExternalUrl } from '../lib/urlSafety'
 
 function GitHubIcon() {
   return (
@@ -47,6 +48,8 @@ export default function AboutPage() {
   })
 
   useDesktopPageMeta('About', loading ? 'Memuat profil...' : 'Maintainer')
+  const githubUrl = normalizeSafeExternalUrl(creator.githubUrl)
+  const blogUrl = normalizeSafeExternalUrl(creator.blogUrl)
 
   return (
     <div className="page-content">
@@ -69,24 +72,28 @@ export default function AboutPage() {
             <strong>{creator.aboutRole}</strong> {creator.aboutSummary}
           </p>
           <div className="profile-socials">
-            <a
-              href={creator.githubUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="profile-github-link"
-              aria-label="Open GitHub repository"
-            >
-              <GitHubIcon />
-            </a>
-            <a
-              href={creator.blogUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="profile-github-link"
-              aria-label="Open personal blog"
-            >
-              <BlogIcon />
-            </a>
+            {githubUrl ? (
+              <a
+                href={githubUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="profile-github-link"
+                aria-label="Open GitHub repository"
+              >
+                <GitHubIcon />
+              </a>
+            ) : null}
+            {blogUrl ? (
+              <a
+                href={blogUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="profile-github-link"
+                aria-label="Open personal blog"
+              >
+                <BlogIcon />
+              </a>
+            ) : null}
           </div>
         </div>
       </section>

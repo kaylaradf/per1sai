@@ -38,7 +38,16 @@ export default function BlogDetailPage() {
       <article className="blog-detail">
         <h2>{post.title}</h2>
         <p className="blog-date">{post.createdAt}</p>
-        <div dangerouslySetInnerHTML={{ __html: post.content }} />
+        {post.contentBlocks?.paragraphs?.map((paragraph, index) => (
+          <p key={`paragraph-${index}`}>{paragraph}</p>
+        ))}
+        {post.contentBlocks?.bullets?.length ? (
+          <ul>
+            {post.contentBlocks.bullets.map((bullet, index) => (
+              <li key={`bullet-${index}`}>{bullet}</li>
+            ))}
+          </ul>
+        ) : null}
       </article>
       <Link to="/blog" className="text-link">
         Kembali ke daftar blog

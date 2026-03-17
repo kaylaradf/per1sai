@@ -4,7 +4,8 @@ const STORAGE_KEY = 'adata.admin.auth'
 
 function parseStoredAuth() {
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY)
+    window.localStorage.removeItem(STORAGE_KEY)
+    const raw = window.sessionStorage.getItem(STORAGE_KEY)
     return raw ? JSON.parse(raw) : null
   } catch {
     return null
@@ -20,11 +21,13 @@ export function getStoredAdminAuth() {
 }
 
 export function persistAdminAuth(auth) {
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(auth))
+  window.localStorage.removeItem(STORAGE_KEY)
+  window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(auth))
 }
 
 export function clearStoredAdminAuth() {
   window.localStorage.removeItem(STORAGE_KEY)
+  window.sessionStorage.removeItem(STORAGE_KEY)
 }
 
 export async function loginAdmin(identity, password) {

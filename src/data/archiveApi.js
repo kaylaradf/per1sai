@@ -10,6 +10,7 @@ import {
 } from './mockDb'
 import { getFileUrl, hasPocketBaseConfigured, listRecords } from '../lib/pocketbase'
 import { scheduleTimeSlots } from '../lib/adminResources'
+import { normalizeSafeExternalUrl } from '../lib/urlSafety'
 
 const weekdays = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
 const scheduleSlotIndex = new Map(scheduleTimeSlots.map((slot, index) => [`${slot.startTime}-${slot.endTime}`, index]))
@@ -457,8 +458,8 @@ async function loadSiteSettings() {
           aboutName: record.about_name || defaultSiteSettings.aboutName,
           aboutRole: record.about_role || defaultSiteSettings.aboutRole,
           aboutSummary: record.about_summary || defaultSiteSettings.aboutSummary,
-          blogUrl: record.blog_url || defaultSiteSettings.blogUrl,
-          githubUrl: record.github_url || defaultSiteSettings.githubUrl,
+          blogUrl: record.blog_url ? normalizeSafeExternalUrl(record.blog_url) : defaultSiteSettings.blogUrl,
+          githubUrl: record.github_url ? normalizeSafeExternalUrl(record.github_url) : defaultSiteSettings.githubUrl,
           siteTitle: record.site_title || defaultSiteSettings.siteTitle,
         }
       })
