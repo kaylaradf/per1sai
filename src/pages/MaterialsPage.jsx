@@ -214,9 +214,11 @@ export default function MaterialsPage() {
               return (
                 <article key={material.id} className="material-card">
                   <h3>{material.title}</h3>
-                  <p>
-                    {material.week} · <span className="type-chip">{getTypeLabel(material.fileName)}</span> ·{' '}
-                    {material.size} · {material.updatedAt}
+                  <p className="material-card-meta">
+                    <span>{material.week}</span>
+                    <span className="type-chip">{getTypeLabel(material.fileName)}</span>
+                    <span>{material.size}</span>
+                    <span>{material.updatedAt}</span>
                   </p>
                   <div className="material-actions">
                     <a href={viewTarget.href || material.url} target="_blank" rel="noreferrer" className="action-btn">
