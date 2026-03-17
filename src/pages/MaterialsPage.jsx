@@ -4,7 +4,7 @@ import Breadcrumbs from '../components/Breadcrumbs'
 import { getCourseById, getMaterials, getSemesterById } from '../data/archiveApi'
 import useAsyncData from '../hooks/useAsyncData'
 import useDesktopPageMeta from '../hooks/useDesktopPageMeta'
-import { getTypeLabel, getViewUrl } from '../lib/materialActions'
+import { getMaterialViewTarget, getTypeLabel } from '../lib/materialActions'
 
 const categoryLabels = {
   teori: 'Teori',
@@ -178,8 +178,11 @@ export default function MaterialsPage() {
                 </tr>
               </thead>
               <tbody>
-                {visibleMaterials.map((material) => (
-                  <tr key={material.id}>
+                {visibleMaterials.map((material) => {
+                  const viewTarget = getMaterialViewTarget(material)
+
+                  return (
+                    <tr key={material.id}>
                     <td>{material.title}</td>
                     <td>{material.week}</td>
                     <td>
@@ -189,7 +192,7 @@ export default function MaterialsPage() {
                     <td>{material.size}</td>
                     <td>
                       <div className="material-actions">
-                        <a href={getViewUrl(material)} target="_blank" rel="noreferrer" className="action-btn">
+                        <a href={viewTarget.href || material.url} target="_blank" rel="noreferrer" className="action-btn">
                           View
                         </a>
                         <a href={material.url} target="_blank" rel="noreferrer" className="action-btn">
@@ -197,30 +200,35 @@ export default function MaterialsPage() {
                         </a>
                       </div>
                     </td>
-                  </tr>
-                ))}
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
 
           <div className="materials-mobile-list">
-            {visibleMaterials.map((material) => (
-              <article key={material.id} className="material-card">
-                <h3>{material.title}</h3>
-                <p>
-                  {material.week} · <span className="type-chip">{getTypeLabel(material.fileName)}</span> ·{' '}
-                  {material.size} · {material.updatedAt}
-                </p>
-                <div className="material-actions">
-                  <a href={getViewUrl(material)} target="_blank" rel="noreferrer" className="action-btn">
-                    View
-                  </a>
-                  <a href={material.url} target="_blank" rel="noreferrer" className="action-btn">
-                    Download
-                  </a>
-                </div>
-              </article>
-            ))}
+            {visibleMaterials.map((material) => {
+              const viewTarget = getMaterialViewTarget(material)
+
+              return (
+                <article key={material.id} className="material-card">
+                  <h3>{material.title}</h3>
+                  <p>
+                    {material.week} · <span className="type-chip">{getTypeLabel(material.fileName)}</span> ·{' '}
+                    {material.size} · {material.updatedAt}
+                  </p>
+                  <div className="material-actions">
+                    <a href={viewTarget.href || material.url} target="_blank" rel="noreferrer" className="action-btn">
+                      View
+                    </a>
+                    <a href={material.url} target="_blank" rel="noreferrer" className="action-btn">
+                      Download
+                    </a>
+                  </div>
+                </article>
+              )
+            })}
           </div>
 
           {canLoadMore && (

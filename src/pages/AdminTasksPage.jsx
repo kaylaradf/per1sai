@@ -4,6 +4,7 @@ import { AdminConfirmDialog, AdminRetroWindow } from '../components/AdminRetroWi
 import { useAdminAuth } from '../context/adminAuthStore'
 import useAsyncData from '../hooks/useAsyncData'
 import { createAdminRecord, deleteAdminRecord, fetchAdminCollection, updateAdminRecord } from '../lib/adminAuth'
+import { getMaterialViewTarget } from '../lib/materialActions'
 import {
   fetchAdminSelectors,
   filterCoursesBySemester,
@@ -59,6 +60,7 @@ export default function AdminTasksPage() {
       return {
         ...selectors,
         tasks: tasksResponse.items.map((record) => ({
+          attachmentName: record.attachment || '',
           attachmentUrl: getAdminFileUrl(record, 'attachment'),
           courseId: record.course || '',
           courseName: record.expand?.course?.name || '',
@@ -336,63 +338,81 @@ export default function AdminTasksPage() {
                   </thead>
                   <tbody>
                     {filteredTasks.map((task) => (
-                      <tr key={task.id}>
-                        <td>
-                          <strong>{task.title}</strong>
-                          {task.description ? <p className="admin-table-copy">{task.description}</p> : null}
-                        </td>
-                        <td>{task.courseName || '-'}</td>
-                        <td>{task.semesterName || '-'}</td>
-                        <td>{task.type || '-'}</td>
-                        <td>{priorityLabels[task.priority] || task.priority}</td>
-                        <td>{formatAdminDateLabel(task.dueDate)}</td>
-                        <td>{task.status === 'expired' ? 'Expired' : 'In Progress'}</td>
-                        <td>
-                          <div className="material-actions">
-                            <button type="button" className="action-btn" onClick={() => startEditing(task)}>
-                              Edit
-                            </button>
-                            {task.attachmentUrl ? (
-                              <a href={task.attachmentUrl} target="_blank" rel="noreferrer" className="ghost-btn">
-                                View
-                              </a>
-                            ) : null}
-                            <button type="button" className="ghost-btn" onClick={() => setPendingDelete(task)}>
-                              Delete
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
+                      (() => {
+                        const viewTarget = getMaterialViewTarget({
+                          fileName: task.attachmentName,
+                          url: task.attachmentUrl,
+                          viewUrl: task.attachmentUrl,
+                        })
+
+                        return (
+                          <tr key={task.id}>
+                            <td>
+                              <strong>{task.title}</strong>
+                              {task.description ? <p className="admin-table-copy">{task.description}</p> : null}
+                            </td>
+                            <td>{task.courseName || '-'}</td>
+                            <td>{task.semesterName || '-'}</td>
+                            <td>{task.type || '-'}</td>
+                            <td>{priorityLabels[task.priority] || task.priority}</td>
+                            <td>{formatAdminDateLabel(task.dueDate)}</td>
+                            <td>{task.status === 'expired' ? 'Expired' : 'In Progress'}</td>
+                            <td>
+                              <div className="material-actions">
+                                <button type="button" className="action-btn" onClick={() => startEditing(task)}>
+                                  Edit
+                                </button>
+                                {viewTarget.href ? (
+                                  <a href={viewTarget.href} target="_blank" rel="noreferrer" className="ghost-btn">
+                                    View
+                                  </a>
+                                ) : null}
+                                <button type="button" className="ghost-btn" onClick={() => setPendingDelete(task)}>
+                                  Delete
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        )
+                      })()
                     ))}
                   </tbody>
                 </table>
               </div>
 
               <div className="materials-mobile-list">
-                {filteredTasks.map((task) => (
-                  <article key={task.id} className="material-card">
-                    <h3>{task.title}</h3>
-                    <p>
-                      {task.courseName || '-'} · {priorityLabels[task.priority] || task.priority} ·{' '}
-                      {task.status === 'expired' ? 'Expired' : 'In Progress'}
-                    </p>
-                    <p>Due: {formatAdminDateLabel(task.dueDate)}</p>
-                    {task.description ? <p>{task.description}</p> : null}
-                    <div className="material-actions">
-                      <button type="button" className="action-btn" onClick={() => startEditing(task)}>
-                        Edit
-                      </button>
-                      {task.attachmentUrl ? (
-                        <a href={task.attachmentUrl} target="_blank" rel="noreferrer" className="ghost-btn">
-                          View
-                        </a>
-                      ) : null}
-                      <button type="button" className="ghost-btn" onClick={() => setPendingDelete(task)}>
-                        Delete
-                      </button>
-                    </div>
-                  </article>
-                ))}
+                {filteredTasks.map((task) => {
+                  const viewTarget = getMaterialViewTarget({
+                    fileName: task.attachmentName,
+                    url: task.attachmentUrl,
+                    viewUrl: task.attachmentUrl,
+                  })
+
+                  return (
+                    <article key={task.id} className="material-card">
+                      <h3>{task.title}</h3>
+                      <p>
+                        {task.courseName || '-'} · {priorityLabels[task.priority] || task.priority} ·{' '}
+                        {task.status === 'expired' ? 'Expired' : 'In Progress'}
+                      </p>
+                      <p>Due: {formatAdminDateLabel(task.dueDate)}</p>
+                      {task.description ? <p>{task.description}</p> : null}
+                      <div className="material-actions">
+                        <button type="button" className="action-btn" onClick={() => startEditing(task)}>
+                          Edit
+                        </button>
+                        {viewTarget.href ? (
+                          <a href={viewTarget.href} target="_blank" rel="noreferrer" className="ghost-btn">
+                            View
+                          </a>
+                        ) : null}
+                        <button type="button" className="ghost-btn" onClick={() => setPendingDelete(task)}>
+                          Delete
+                        </button>
+                      </div>
+                    </article>
+                  )
+                })}
               </div>
             </>
           ) : (

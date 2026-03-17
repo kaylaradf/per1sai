@@ -37,7 +37,7 @@ function buildDriveDownloadUrl(driveId) {
 }
 
 function buildDriveViewUrl(driveId) {
-  return `https://drive.google.com/file/d/${driveId}/view`
+  return `https://drive.google.com/file/d/${driveId}/preview`
 }
 
 function inferFileType(fileName) {
@@ -162,6 +162,7 @@ export async function fetchAdminMaterialCategory({ token, semesterNumber, course
 
       return {
         description: record.description || '',
+        driveId: record.driveId || '',
         fileName: record.file || '',
         fileType: record.file_type || inferFileType(record.file),
         fileUrl,

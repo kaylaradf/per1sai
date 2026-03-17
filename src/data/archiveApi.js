@@ -82,7 +82,7 @@ function buildDriveDownloadUrl(driveId) {
 }
 
 function buildDriveViewUrl(driveId) {
-  return `https://drive.google.com/file/d/${driveId}/view`
+  return `https://drive.google.com/file/d/${driveId}/preview`
 }
 
 function createMockArchiveTree() {
@@ -196,6 +196,7 @@ async function loadArchiveTree() {
         course.categories[category].push({
           category,
           courseId: course.id,
+          driveId: record.driveId || '',
           id: record.id,
           fileName,
           size: '-',

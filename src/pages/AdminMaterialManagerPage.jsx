@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { AdminConfirmDialog, AdminRetroWindow } from '../components/AdminRetroWindow'
 import { useAdminAuth } from '../context/adminAuthStore'
 import useAsyncData from '../hooks/useAsyncData'
+import { getMaterialViewTarget } from '../lib/materialActions'
 import {
   createAdminMaterial,
   deleteAdminMaterial,
@@ -225,62 +226,82 @@ export default function AdminMaterialManagerPage() {
                   </thead>
                   <tbody>
                     {data.materials.map((material) => (
-                      <tr key={material.id}>
-                        <td>
-                          <strong>{material.title}</strong>
-                          {material.description ? <p className="admin-table-copy">{material.description}</p> : null}
-                        </td>
-                        <td>{material.weekNumber || '-'}</td>
-                        <td>{material.sortOrder || '-'}</td>
-                        <td>{material.fileName || '-'}</td>
-                        <td>{material.published ? 'Published' : 'Draft'}</td>
-                        <td>{material.updatedAt}</td>
-                        <td>
-                          <div className="material-actions">
-                            <button type="button" className="action-btn" onClick={() => startEditing(material)}>
-                              Edit
-                            </button>
-                            {material.viewUrl ? (
-                              <a href={material.viewUrl} target="_blank" rel="noreferrer" className="ghost-btn">
-                                View
-                              </a>
-                            ) : null}
-                            <button type="button" className="ghost-btn" onClick={() => setPendingDelete(material)}>
-                              Delete
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
+                      (() => {
+                        const viewTarget = getMaterialViewTarget({
+                          driveId: material.driveId,
+                          fileName: material.fileName,
+                          url: material.fileUrl,
+                          viewUrl: material.viewUrl,
+                        })
+
+                        return (
+                          <tr key={material.id}>
+                            <td>
+                              <strong>{material.title}</strong>
+                              {material.description ? <p className="admin-table-copy">{material.description}</p> : null}
+                            </td>
+                            <td>{material.weekNumber || '-'}</td>
+                            <td>{material.sortOrder || '-'}</td>
+                            <td>{material.fileName || '-'}</td>
+                            <td>{material.published ? 'Published' : 'Draft'}</td>
+                            <td>{material.updatedAt}</td>
+                            <td>
+                              <div className="material-actions">
+                                <button type="button" className="action-btn" onClick={() => startEditing(material)}>
+                                  Edit
+                                </button>
+                                {viewTarget.href ? (
+                                  <a href={viewTarget.href} target="_blank" rel="noreferrer" className="ghost-btn">
+                                    View
+                                  </a>
+                                ) : null}
+                                <button type="button" className="ghost-btn" onClick={() => setPendingDelete(material)}>
+                                  Delete
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        )
+                      })()
                     ))}
                   </tbody>
                 </table>
               </div>
 
               <div className="materials-mobile-list">
-                {data.materials.map((material) => (
-                  <article key={material.id} className="material-card">
-                    <h3>{material.title}</h3>
-                    <p>
-                      Minggu {material.weekNumber || '-'} · Urut {material.sortOrder || '-'} ·{' '}
-                      {material.published ? 'Published' : 'Draft'}
-                    </p>
-                    {material.description ? <p>{material.description}</p> : null}
-                    <p>{material.fileName || 'No file attached'}</p>
-                    <div className="material-actions">
-                      <button type="button" className="action-btn" onClick={() => startEditing(material)}>
-                        Edit
-                      </button>
-                      {material.viewUrl ? (
-                        <a href={material.viewUrl} target="_blank" rel="noreferrer" className="ghost-btn">
-                          View
-                        </a>
-                      ) : null}
-                      <button type="button" className="ghost-btn" onClick={() => setPendingDelete(material)}>
-                        Delete
-                      </button>
-                    </div>
-                  </article>
-                ))}
+                {data.materials.map((material) => {
+                  const viewTarget = getMaterialViewTarget({
+                    driveId: material.driveId,
+                    fileName: material.fileName,
+                    url: material.fileUrl,
+                    viewUrl: material.viewUrl,
+                  })
+
+                  return (
+                    <article key={material.id} className="material-card">
+                      <h3>{material.title}</h3>
+                      <p>
+                        Minggu {material.weekNumber || '-'} · Urut {material.sortOrder || '-'} ·{' '}
+                        {material.published ? 'Published' : 'Draft'}
+                      </p>
+                      {material.description ? <p>{material.description}</p> : null}
+                      <p>{material.fileName || 'No file attached'}</p>
+                      <div className="material-actions">
+                        <button type="button" className="action-btn" onClick={() => startEditing(material)}>
+                          Edit
+                        </button>
+                        {viewTarget.href ? (
+                          <a href={viewTarget.href} target="_blank" rel="noreferrer" className="ghost-btn">
+                            View
+                          </a>
+                        ) : null}
+                        <button type="button" className="ghost-btn" onClick={() => setPendingDelete(material)}>
+                          Delete
+                        </button>
+                      </div>
+                    </article>
+                  )
+                })}
               </div>
             </>
           ) : (
