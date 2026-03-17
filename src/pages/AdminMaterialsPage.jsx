@@ -149,7 +149,7 @@ export default function AdminMaterialsPage() {
 
               <div className="materials-mobile-list">
                 {activeSemester.courseItems.map((course) => (
-                  <article key={course.id} className="material-card">
+                  <article key={course.id} className="material-card admin-mobile-list-card admin-mobile-list-card--dual">
                     <h3>{course.name}</h3>
                     <p>
                       Total: {course.materials} · Teori: {course.teori} · Praktikum: {course.praktikum}
@@ -268,13 +268,12 @@ export default function AdminMaterialsPage() {
               <Link
                 key={semester.id}
                 to={`/admin/materials/semester/${semester.number}`}
-                className={`admin-card admin-card--interactive ${
+                className={`admin-card admin-card--interactive admin-card--mobile-list ${
                   semester.number === activeSemesterNumber ? 'admin-card--active' : ''
                 }`}
               >
                 <h3>{semester.name}</h3>
-                <p>{loading ? 'Loading...' : `${semester.courses} mata kuliah`}</p>
-                <p>{loading ? 'Loading...' : `${semester.materials} materi`}</p>
+                <p>{loading ? 'Loading...' : `${semester.courses} mata kuliah · ${semester.materials} materi`}</p>
               </Link>
             ))}
           </div>

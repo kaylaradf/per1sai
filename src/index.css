@@ -427,6 +427,10 @@ a {
   text-transform: uppercase;
 }
 
+.admin-panel .list-summary {
+  margin-top: 0.35rem;
+}
+
 .breadcrumbs {
   display: flex;
   gap: 0.25rem;
@@ -1171,6 +1175,10 @@ a {
   font-size: 1rem;
 }
 
+.admin-card--mobile-list p {
+  margin: 0;
+}
+
 .admin-section + .admin-section {
   margin-top: 1rem;
 }
@@ -1613,26 +1621,139 @@ a {
     grid-template-columns: 1fr;
   }
 
+  .admin-grid,
+  .admin-grid--semesters,
+  .admin-grid--courses {
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+  }
+
   .admin-card {
-    padding: 0.55rem 0.6rem;
+    padding: 0.46rem 0.52rem;
   }
 
   .admin-card h2,
   .admin-card h3 {
-    margin: 0 0 0.12rem;
-    font-size: 0.8rem;
-    line-height: 1.15;
+    margin: 0 0 0.1rem;
+    font-size: 0.82rem;
+    line-height: 1.14;
   }
 
   .admin-card p {
     margin: 0;
     font-size: 0.72rem;
-    line-height: 1.25;
+    line-height: 1.18;
+  }
+
+  .admin-card--mobile-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.12rem;
+  }
+
+  .admin-card--mobile-list .task-meta {
+    margin-top: 0.12rem;
+  }
+
+  .admin-mobile-list-card {
+    padding: 0.36rem 0.44rem 0.4rem;
+  }
+
+  .admin-mobile-list-card h3 {
+    margin: 0 0 0.08rem;
+    font-size: 0.78rem;
+    line-height: 1.14;
+  }
+
+  .admin-mobile-list-card p {
+    margin: 0;
+    font-size: 0.72rem;
+    line-height: 1.18;
+  }
+
+  .admin-mobile-list-card > p + p {
+    margin-top: 0.14rem;
+  }
+
+  .admin-mobile-list-card .material-actions {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.16rem;
+    margin-top: 0.18rem;
+  }
+
+  .admin-mobile-list-card .material-actions .action-btn,
+  .admin-mobile-list-card .material-actions .ghost-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 1.52rem;
+    padding: 0.08rem 0.28rem;
+    font: inherit;
+    font-size: 0.68rem;
+    line-height: 1;
+    white-space: nowrap;
+    box-shadow: 1px 1px 0 0 #141414;
+  }
+
+  .admin-mobile-list-card--dual .material-actions > * {
+    flex-basis: 50%;
+  }
+
+  .admin-mobile-list-card--triple .material-actions > * {
+    flex-basis: calc(33.333% - 0.12rem);
+  }
+
+  .admin-section-head--mobile-stack {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.45rem;
+  }
+
+  .admin-section-head--mobile-stack > .action-btn,
+  .admin-section-head--mobile-stack > .ghost-btn {
+    align-self: stretch;
+  }
+
+  .admin-section-head--mobile-stack + .materials-table-wrap,
+  .admin-section-head--mobile-stack ~ .materials-mobile-list,
+  .admin-section-head--mobile-stack ~ .empty-state {
+    margin-top: 0.35rem;
   }
 
   .admin-toolbar > .action-btn,
   .admin-toolbar > .ghost-btn {
     justify-self: stretch;
+  }
+
+  .admin-header {
+    gap: 0.55rem;
+  }
+
+  .admin-header h1 {
+    margin: 0;
+    line-height: 1.02;
+  }
+
+  .admin-copy {
+    margin-top: 0.18rem;
+    line-height: 1.25;
+  }
+
+  .admin-section {
+    margin-top: 0.75rem;
+  }
+
+  .admin-section + .admin-section {
+    margin-top: 0.75rem;
+  }
+
+  .admin-section-head {
+    gap: 0.45rem;
+  }
+
+  .admin-section-head h2 {
+    margin: 0 0 0.12rem;
+    line-height: 1.05;
   }
 
   .profile-card-body {

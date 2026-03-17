@@ -327,7 +327,7 @@ export default function AdminAnnouncementsPage() {
 
               <div className="materials-mobile-list">
                 {filteredAnnouncements.map((announcement) => (
-                  <article key={announcement.id} className="material-card">
+                  <article key={announcement.id} className="material-card admin-mobile-list-card admin-mobile-list-card--dual">
                     <h3>{announcement.title}</h3>
                     <p>
                       {announcement.category} · {announcement.published ? 'Published' : 'Draft'} ·{' '}

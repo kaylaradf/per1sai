@@ -197,7 +197,7 @@ export default function AdminMaterialManagerPage() {
         {(error || formError) && <p className="admin-error">{error?.message || formError}</p>}
 
         <section className="admin-section">
-          <div className="admin-section-head">
+          <div className="admin-section-head admin-section-head--mobile-stack">
             <div>
               <h2>Daftar Material</h2>
               <p className="admin-copy">Edit, hapus, atau cek file yang sudah ada di kategori ini.</p>
@@ -278,7 +278,7 @@ export default function AdminMaterialManagerPage() {
                   })
 
                   return (
-                    <article key={material.id} className="material-card">
+                    <article key={material.id} className="material-card admin-mobile-list-card admin-mobile-list-card--triple">
                       <h3>{material.title}</h3>
                       <p>
                         Minggu {material.weekNumber || '-'} · Urut {material.sortOrder || '-'} ·{' '}

@@ -389,7 +389,7 @@ export default function AdminTasksPage() {
                   })
 
                   return (
-                    <article key={task.id} className="material-card">
+                    <article key={task.id} className="material-card admin-mobile-list-card admin-mobile-list-card--triple">
                       <h3>{task.title}</h3>
                       <p>
                         {task.courseName || '-'} · {priorityLabels[task.priority] || task.priority} ·{' '}
