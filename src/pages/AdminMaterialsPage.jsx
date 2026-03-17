@@ -66,12 +66,18 @@ export default function AdminMaterialsPage() {
                         <td>{course.praktikum}</td>
                         <td>
                           <div className="material-actions">
-                            <button type="button" className="action-btn">
+                            <Link
+                              to={`/admin/materials/semester/${activeSemesterNumber}/course/${course.id}/teori`}
+                              className="action-btn"
+                            >
                               Kelola Teori
-                            </button>
-                            <button type="button" className="ghost-btn">
+                            </Link>
+                            <Link
+                              to={`/admin/materials/semester/${activeSemesterNumber}/course/${course.id}/praktikum`}
+                              className="ghost-btn"
+                            >
                               Kelola Praktikum
-                            </button>
+                            </Link>
                           </div>
                         </td>
                       </tr>
@@ -88,12 +94,18 @@ export default function AdminMaterialsPage() {
                       Total: {course.materials} · Teori: {course.teori} · Praktikum: {course.praktikum}
                     </p>
                     <div className="material-actions">
-                      <button type="button" className="action-btn">
+                      <Link
+                        to={`/admin/materials/semester/${activeSemesterNumber}/course/${course.id}/teori`}
+                        className="action-btn"
+                      >
                         Kelola Teori
-                      </button>
-                      <button type="button" className="ghost-btn">
+                      </Link>
+                      <Link
+                        to={`/admin/materials/semester/${activeSemesterNumber}/course/${course.id}/praktikum`}
+                        className="ghost-btn"
+                      >
                         Kelola Praktikum
-                      </button>
+                      </Link>
                     </div>
                   </article>
                 ))}

@@ -1,7 +1,40 @@
-import { fetchAdminCollection } from './adminAuth'
+import { createAdminRecord, deleteAdminRecord, fetchAdminCollection, fetchAdminRecord, updateAdminRecord } from './adminAuth'
+import { getFileUrl } from './pocketbase'
 
-function normalizeCategory(value) {
+export function normalizeCategory(value) {
   return String(value || '').toLowerCase().includes('prakt') ? 'praktikum' : 'teori'
+}
+
+function formatCategoryLabel(category) {
+  return category === 'praktikum' ? 'Praktikum' : 'Teori'
+}
+
+function toDateLabel(value) {
+  if (!value) {
+    return '-'
+  }
+
+  const isoCandidate = value.includes(' ') ? value.replace(' ', 'T') : value
+  const parsed = new Date(isoCandidate)
+
+  if (Number.isNaN(parsed.getTime())) {
+    return String(value).slice(0, 10)
+  }
+
+  return parsed.toISOString().slice(0, 10)
+}
+
+function buildDriveDownloadUrl(driveId) {
+  return `https://drive.google.com/uc?export=download&id=${driveId}`
+}
+
+function buildDriveViewUrl(driveId) {
+  return `https://drive.google.com/file/d/${driveId}/view`
+}
+
+function inferFileType(fileName) {
+  const parts = String(fileName || '').split('.')
+  return parts.length > 1 ? parts.at(-1).toLowerCase() : ''
 }
 
 function buildSemesterSlots(records) {
@@ -74,4 +107,113 @@ export async function fetchAdminMaterialsOverview(token) {
     totalCourses: coursesResponse.totalItems,
     totalMaterials: materialsResponse.totalItems,
   }
+}
+
+export async function fetchAdminMaterialCategory({ token, semesterNumber, courseId, category }) {
+  const normalizedCategory = normalizeCategory(category)
+  const [semestersResponse, courseRecord, materialsResponse] = await Promise.all([
+    fetchAdminCollection('semesters', token, { perPage: 200, sort: 'semester' }),
+    fetchAdminRecord('courses', courseId, token),
+    fetchAdminCollection('materials', token, {
+      filter: `course="${courseId}"`,
+      page: 1,
+      perPage: 500,
+      sort: 'sort_order,title',
+    }),
+  ])
+
+  const semesterRecord =
+    semestersResponse.items.find((record) => Number(record.semester) === Number(semesterNumber)) || null
+
+  if (!courseRecord?.id || !semesterRecord?.id || courseRecord.semester !== semesterRecord.id) {
+    throw new Error('Mata kuliah atau semester tidak cocok')
+  }
+
+  const materials = materialsResponse.items
+    .filter((record) => normalizeCategory(record.type) === normalizedCategory)
+    .sort((left, right) => {
+      const leftWeek = Number(left.week_number) || 999
+      const rightWeek = Number(right.week_number) || 999
+
+      if (leftWeek !== rightWeek) {
+        return leftWeek - rightWeek
+      }
+
+      const leftOrder = Number(left.sort_order) || 999
+      const rightOrder = Number(right.sort_order) || 999
+
+      if (leftOrder !== rightOrder) {
+        return leftOrder - rightOrder
+      }
+
+      return String(left.title || '').localeCompare(String(right.title || ''))
+    })
+    .map((record) => {
+      const fileUrl = record.file ? getFileUrl(record, record.file) : record.driveId ? buildDriveDownloadUrl(record.driveId) : ''
+      const viewUrl = record.file ? getFileUrl(record, record.file) : record.driveId ? buildDriveViewUrl(record.driveId) : ''
+
+      return {
+        description: record.description || '',
+        fileName: record.file || '',
+        fileType: record.file_type || inferFileType(record.file),
+        fileUrl,
+        id: record.id,
+        published: Boolean(record.published),
+        raw: record,
+        sortOrder: Number(record.sort_order) || 0,
+        title: record.title || 'Untitled Material',
+        updatedAt: toDateLabel(record.updated || record.uploadDate),
+        viewUrl,
+        weekNumber: Number(record.week_number) || 0,
+      }
+    })
+
+  return {
+    category: normalizedCategory,
+    categoryLabel: formatCategoryLabel(normalizedCategory),
+    course: {
+      id: courseRecord.id,
+      name: courseRecord.name || courseRecord.code || 'Untitled Course',
+    },
+    materials,
+    semester: {
+      id: semesterRecord.id,
+      name: semesterRecord.name || `Semester ${semesterNumber}`,
+      number: Number(semesterNumber),
+    },
+  }
+}
+
+function buildMaterialFormData({ category, courseId, description, file, published, semesterRecordId, sortOrder, title, weekNumber }) {
+  const formData = new FormData()
+
+  formData.set('title', title.trim())
+  formData.set('description', description.trim())
+  formData.set('type', category === 'praktikum' ? 'Praktikum' : 'Teori')
+  formData.set('course', courseId)
+  formData.set('semester', semesterRecordId)
+  formData.set('published', published ? 'true' : 'false')
+  formData.set('sort_order', String(sortOrder || 0))
+  formData.set('week_number', String(weekNumber || 0))
+
+  if (file) {
+    formData.set('file', file)
+    formData.set('file_type', inferFileType(file.name))
+  }
+
+  return formData
+}
+
+export async function createAdminMaterial(token, input) {
+  const formData = buildMaterialFormData(input)
+  return createAdminRecord('materials', token, formData)
+}
+
+export async function updateAdminMaterial(token, recordId, input) {
+  const formData = buildMaterialFormData(input)
+  return updateAdminRecord('materials', recordId, token, formData)
+}
+
+export async function deleteAdminMaterial(token, recordId) {
+  return deleteAdminRecord('materials', recordId, token)
 }

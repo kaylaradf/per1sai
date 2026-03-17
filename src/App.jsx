@@ -6,6 +6,7 @@ import { AdminAuthProvider } from './context/AdminAuthContext'
 import { DesktopMetaProvider } from './context/DesktopMetaContext'
 import AdminDashboardPage from './pages/AdminDashboardPage'
 import AdminLoginPage from './pages/AdminLoginPage'
+import AdminMaterialManagerPage from './pages/AdminMaterialManagerPage'
 import AdminMaterialsPage from './pages/AdminMaterialsPage'
 import AnnouncementsPage from './pages/AnnouncementsPage'
 import CoursePage from './pages/CoursePage'
@@ -39,6 +40,14 @@ const router = createHashRouter([
     element: (
       <AdminRoute>
         <AdminMaterialsPage />
+      </AdminRoute>
+    ),
+  },
+  {
+    path: '/admin/materials/semester/:semesterNumber/course/:courseId/:category',
+    element: (
+      <AdminRoute>
+        <AdminMaterialManagerPage />
       </AdminRoute>
     ),
   },

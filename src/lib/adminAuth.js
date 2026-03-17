@@ -58,6 +58,25 @@ export async function loginAdmin(identity, password) {
   return auth
 }
 
+async function requestAdmin(path, token, options = {}) {
+  const response = await fetch(`${pocketBaseUrl}${path}`, {
+    ...options,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
+      ...(options.headers || {}),
+    },
+  })
+
+  const payload = await response.json().catch(() => null)
+
+  if (!response.ok) {
+    throw new Error(payload?.message || 'PocketBase admin request gagal')
+  }
+
+  return payload
+}
+
 export async function fetchAdminCollection(collectionName, token, params = {}) {
   const query = new URLSearchParams()
 
@@ -67,20 +86,43 @@ export async function fetchAdminCollection(collectionName, token, params = {}) {
     }
   })
 
-  const response = await fetch(
-    `${pocketBaseUrl}/api/collections/${collectionName}/records${query.toString() ? `?${query.toString()}` : ''}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
+  return requestAdmin(
+    `/api/collections/${collectionName}/records${query.toString() ? `?${query.toString()}` : ''}`,
+    token,
   )
+}
 
-  const payload = await response.json().catch(() => null)
+export async function fetchAdminRecord(collectionName, recordId, token, params = {}) {
+  const query = new URLSearchParams()
 
-  if (!response.ok) {
-    throw new Error(payload?.message || `Gagal memuat ${collectionName}`)
-  }
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      query.set(key, String(value))
+    }
+  })
 
-  return payload
+  return requestAdmin(
+    `/api/collections/${collectionName}/records/${recordId}${query.toString() ? `?${query.toString()}` : ''}`,
+    token,
+  )
+}
+
+export async function createAdminRecord(collectionName, token, body) {
+  return requestAdmin(`/api/collections/${collectionName}/records`, token, {
+    body: body instanceof FormData ? body : JSON.stringify(body),
+    method: 'POST',
+  })
+}
+
+export async function updateAdminRecord(collectionName, recordId, token, body) {
+  return requestAdmin(`/api/collections/${collectionName}/records/${recordId}`, token, {
+    body: body instanceof FormData ? body : JSON.stringify(body),
+    method: 'PATCH',
+  })
+}
+
+export async function deleteAdminRecord(collectionName, recordId, token) {
+  return requestAdmin(`/api/collections/${collectionName}/records/${recordId}`, token, {
+    method: 'DELETE',
+  })
 }
