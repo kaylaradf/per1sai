@@ -1154,6 +1154,17 @@ a {
   min-width: 10rem;
 }
 
+.admin-schedule-dropzone {
+  min-height: 100%;
+  border: 1px dashed transparent;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.admin-schedule-dropzone.is-active {
+  background: #f3f4f6;
+  border-color: #141414;
+}
+
 .admin-schedule-break {
   background: repeating-linear-gradient(
     135deg,
@@ -1206,6 +1217,11 @@ a {
 
 .admin-schedule-entry.is-muted {
   opacity: 0.55;
+}
+
+.admin-schedule-entry.is-dragging {
+  opacity: 0.45;
+  transform: scale(0.98);
 }
 
 .blog-detail blockquote {

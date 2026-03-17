@@ -35,6 +35,8 @@ export default function AdminSchedulePage() {
   const [refreshSeed, setRefreshSeed] = useState(0)
   const [selectedSemesterId, setSelectedSemesterId] = useState('')
   const [editingId, setEditingId] = useState('')
+  const [draggingId, setDraggingId] = useState('')
+  const [dropTargetKey, setDropTargetKey] = useState('')
   const [form, setForm] = useState(createEmptyForm)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [pendingDelete, setPendingDelete] = useState(null)
@@ -260,6 +262,91 @@ export default function AdminSchedulePage() {
     }
   }
 
+  async function handleMoveEntry(entry, dayOfWeek, startTime, endTime) {
+    if (!entry || submitting) {
+      return
+    }
+
+    if (entry.dayOfWeek === dayOfWeek && entry.startTime === startTime && entry.endTime === endTime) {
+      setDraggingId('')
+      setDropTargetKey('')
+      return
+    }
+
+    setSubmitting(true)
+    setFormError('')
+
+    try {
+      await updateAdminRecord('schedule', entry.id, auth.token, {
+        class_type: entry.classType,
+        course: entry.courseId,
+        day_of_week: Number(dayOfWeek),
+        end_time: endTime,
+        is_active: entry.isActive,
+        lecturer: entry.lecturer.trim(),
+        room: entry.room.trim(),
+        semester: entry.semesterId,
+        start_time: startTime,
+        subject: entry.courseCode || entry.courseName || entry.subject || '',
+        time: `${startTime} - ${endTime}`,
+      })
+
+      if (editingId === entry.id) {
+        setForm((current) => ({
+          ...current,
+          dayOfWeek: String(dayOfWeek),
+          endTime,
+          startTime,
+        }))
+      }
+
+      setRefreshSeed((value) => value + 1)
+    } catch (moveError) {
+      setFormError(moveError.message || 'Gagal memindahkan entry jadwal')
+    } finally {
+      setSubmitting(false)
+      setDraggingId('')
+      setDropTargetKey('')
+    }
+  }
+
+  function handleDragStart(entry) {
+    if (submitting) {
+      return
+    }
+
+    setDraggingId(entry.id)
+    setDropTargetKey('')
+  }
+
+  function handleDragEnd() {
+    setDraggingId('')
+    setDropTargetKey('')
+  }
+
+  function handleDragOver(event, dayOfWeek, startTime, endTime) {
+    event.preventDefault()
+    event.dataTransfer.dropEffect = 'move'
+    setDropTargetKey(`${dayOfWeek}-${startTime}-${endTime}`)
+  }
+
+  function handleDragLeave(dayOfWeek, startTime, endTime) {
+    const currentKey = `${dayOfWeek}-${startTime}-${endTime}`
+
+    if (dropTargetKey === currentKey) {
+      setDropTargetKey('')
+    }
+  }
+
+  function handleDrop(event, dayOfWeek, startTime, endTime) {
+    event.preventDefault()
+
+    const draggedId = event.dataTransfer.getData('text/plain')
+    const entry = semesterEntries.find((item) => item.id === draggedId)
+
+    void handleMoveEntry(entry, dayOfWeek, startTime, endTime)
+  }
+
   return (
     <main className="admin-shell">
       <section className="admin-panel admin-panel--wide admin-panel--xwide">
@@ -336,27 +423,44 @@ export default function AdminSchedulePage() {
                         ) : (
                           grid.columns.map((column) => (
                             <td key={`${row.key}-${column.dayIndex}`} className="admin-schedule-cell">
-                              <button
-                                type="button"
-                                className="admin-schedule-empty"
-                                onClick={() => openCreateFromCell(column.dayIndex, row.startTime, row.endTime)}
+                              <div
+                                className={`admin-schedule-dropzone ${
+                                  dropTargetKey === `${column.dayIndex}-${row.startTime}-${row.endTime}` ? 'is-active' : ''
+                                }`}
+                                onDragOver={(event) => handleDragOver(event, column.dayIndex, row.startTime, row.endTime)}
+                                onDragLeave={() => handleDragLeave(column.dayIndex, row.startTime, row.endTime)}
+                                onDrop={(event) => handleDrop(event, column.dayIndex, row.startTime, row.endTime)}
                               >
-                                +
-                              </button>
-                              <div className="admin-schedule-stack">
-                                {row.cells[column.dayIndex].map((entry) => (
-                                  <button
-                                    key={entry.id}
-                                    type="button"
-                                    className={`admin-schedule-entry ${entry.isActive ? '' : 'is-muted'}`}
-                                    onClick={() => startEditing(entry)}
-                                  >
-                                    <strong>{entry.courseCode || entry.courseName}</strong>
-                                    <span>{entry.room || '-'}</span>
-                                    <span>{entry.lecturer || '-'}</span>
-                                    <span>{entry.classType}</span>
-                                  </button>
-                                ))}
+                                <button
+                                  type="button"
+                                  className="admin-schedule-empty"
+                                  onClick={() => openCreateFromCell(column.dayIndex, row.startTime, row.endTime)}
+                                >
+                                  +
+                                </button>
+                                <div className="admin-schedule-stack">
+                                  {row.cells[column.dayIndex].map((entry) => (
+                                    <button
+                                      key={entry.id}
+                                      type="button"
+                                      draggable={!submitting}
+                                      onDragStart={(event) => {
+                                        event.dataTransfer.setData('text/plain', entry.id)
+                                        handleDragStart(entry)
+                                      }}
+                                      onDragEnd={handleDragEnd}
+                                      className={`admin-schedule-entry ${entry.isActive ? '' : 'is-muted'} ${
+                                        draggingId === entry.id ? 'is-dragging' : ''
+                                      }`}
+                                      onClick={() => startEditing(entry)}
+                                    >
+                                      <strong>{entry.courseCode || entry.courseName}</strong>
+                                      <span>{entry.room || '-'}</span>
+                                      <span>{entry.lecturer || '-'}</span>
+                                      <span>{entry.classType}</span>
+                                    </button>
+                                  ))}
+                                </div>
                               </div>
                             </td>
                           ))
