@@ -1046,6 +1046,18 @@ a {
   justify-content: flex-end;
 }
 
+.admin-inline-actions--start {
+  justify-content: flex-start;
+}
+
+.admin-course-toolbar {
+  margin-bottom: 0.85rem;
+}
+
+.admin-course-empty {
+  margin-top: 0.4rem;
+}
+
 .admin-field {
   display: grid;
   gap: 0.3rem;

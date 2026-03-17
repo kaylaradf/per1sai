@@ -94,11 +94,13 @@ export default function AdminMaterialsPage() {
 
           {error && <p className="admin-error">{error.message}</p>}
 
-          <div className="admin-section-head admin-section-head--detail">
+          <div className="page-content admin-course-toolbar">
             <p className="list-summary">Pilih mata kuliah untuk turun ke kontrol materi teori dan praktikum.</p>
-            <button type="button" className="action-btn" onClick={handleOpenCreateCourseModal}>
-              Tambah Mata Kuliah
-            </button>
+            <div className="admin-inline-actions admin-inline-actions--start">
+              <button type="button" className="action-btn" onClick={handleOpenCreateCourseModal}>
+                Tambah Mata Kuliah
+              </button>
+            </div>
           </div>
 
           {loading ? (
@@ -171,12 +173,7 @@ export default function AdminMaterialsPage() {
               </div>
             </>
           ) : (
-            <div className="page-content">
-              <p className="empty-state">Belum ada mata kuliah untuk semester ini.</p>
-              <button type="button" className="action-btn" onClick={handleOpenCreateCourseModal}>
-                Tambah Mata Kuliah
-              </button>
-            </div>
+            <p className="empty-state admin-course-empty">Belum ada mata kuliah untuk semester ini.</p>
           )}
         </section>
         {showCreateCourseModal ? (
