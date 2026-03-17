@@ -7,8 +7,8 @@ export default function AdminLoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const { isAuthenticated, login } = useAdminAuth()
-  const [identity, setIdentity] = useState('admin@local.test')
-  const [password, setPassword] = useState('adminadmin')
+  const [identity, setIdentity] = useState('')
+  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
@@ -36,8 +36,7 @@ export default function AdminLoginPage() {
       <section className="admin-panel">
         <h1>Admin Login</h1>
         <p className="admin-copy">
-          Dashboard ini memakai collection <code>admins</code> PocketBase. Ganti credential default segera setelah
-          masuk.
+          Contact maintainer for access.
         </p>
         {!hasPocketBaseConfigured && (
           <p className="empty-state">`VITE_POCKETBASE_URL` belum di-set, jadi mode admin tidak bisa dipakai.</p>
