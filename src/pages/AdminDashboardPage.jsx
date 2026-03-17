@@ -48,7 +48,7 @@ export default function AdminDashboardPage() {
       return 'Loading controls...'
     }
 
-    return `${data.totalMaterials} materials across ${data.totalCourses} courses. Klik Semester untuk masuk ke halaman pemilihan semester dan mata kuliah.`
+    return `${data.totalMaterials} materials across ${data.totalCourses} courses. `
   }, [data.totalCourses, data.totalMaterials, loading])
 
   return (
@@ -58,8 +58,7 @@ export default function AdminDashboardPage() {
           <div>
             <h1>Admin Dashboard</h1>
             <p className="admin-copy">
-              Signed in as <strong>{adminLabel}</strong>. Semester tidak dikelola sebagai resource CRUD karena struktur
-              1-8 bersifat tetap.
+              Signed in as <strong>{adminLabel}</strong>.  
             </p>
           </div>
           <button type="button" className="ghost-btn" onClick={logout}>
