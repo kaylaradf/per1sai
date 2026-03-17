@@ -9,8 +9,10 @@ import {
   getTasks as getTasksFallback,
 } from './mockDb'
 import { getFileUrl, hasPocketBaseConfigured, listRecords } from '../lib/pocketbase'
+import { scheduleTimeSlots } from '../lib/adminResources'
 
 const weekdays = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
+const scheduleSlotIndex = new Map(scheduleTimeSlots.map((slot, index) => [`${slot.startTime}-${slot.endTime}`, index]))
 
 const defaultSiteSettings = {
   siteTitle: 'University Archive',
@@ -270,6 +272,96 @@ function parseTimeRange(value) {
   }
 }
 
+function normalizeScheduleValue(value) {
+  return String(value || '')
+    .trim()
+    .replace(/\s+/g, ' ')
+    .toLowerCase()
+}
+
+function getScheduleMergeKey(entry) {
+  return [
+    normalizeScheduleValue(entry.course),
+    normalizeScheduleValue(entry.room),
+    normalizeScheduleValue(entry.lecturer),
+    normalizeScheduleValue(entry.type),
+  ].join('::')
+}
+
+function compareScheduleEntries(left, right) {
+  if (left.day !== right.day) {
+    return left.day - right.day
+  }
+
+  const leftSlot = scheduleSlotIndex.get(`${left.start}-${left.end}`)
+  const rightSlot = scheduleSlotIndex.get(`${right.start}-${right.end}`)
+
+  if (leftSlot !== undefined && rightSlot !== undefined && leftSlot !== rightSlot) {
+    return leftSlot - rightSlot
+  }
+
+  if (left.start !== right.start) {
+    return left.start.localeCompare(right.start)
+  }
+
+  if (left.end !== right.end) {
+    return left.end.localeCompare(right.end)
+  }
+
+  const leftMergeKey = getScheduleMergeKey(left)
+  const rightMergeKey = getScheduleMergeKey(right)
+
+  if (leftMergeKey !== rightMergeKey) {
+    return leftMergeKey.localeCompare(rightMergeKey)
+  }
+
+  return left.id.localeCompare(right.id)
+}
+
+function canMergeScheduleEntries(previous, next) {
+  if (!previous || !next) {
+    return false
+  }
+
+  if (previous.day !== next.day || getScheduleMergeKey(previous) !== getScheduleMergeKey(next)) {
+    return false
+  }
+
+  const previousSlot = scheduleSlotIndex.get(`${previous.start}-${previous.end}`)
+  const nextSlot = scheduleSlotIndex.get(`${next.start}-${next.end}`)
+
+  if (previousSlot !== undefined && nextSlot !== undefined) {
+    return nextSlot > previousSlot
+  }
+
+  if (previous.start !== next.start) {
+    return previous.start.localeCompare(next.start) < 0
+  }
+
+  return previous.end.localeCompare(next.end) < 0
+}
+
+function mergeScheduleEntries(entries) {
+  const merged = []
+
+  entries
+    .slice()
+    .sort(compareScheduleEntries)
+    .forEach((entry) => {
+      const lastEntry = merged.at(-1)
+
+      if (canMergeScheduleEntries(lastEntry, entry)) {
+        lastEntry.end = entry.end
+        lastEntry.id = `${lastEntry.id}__${entry.id}`
+        return
+      }
+
+      merged.push({ ...entry })
+    })
+
+  return merged
+}
+
 async function loadSchedule() {
   if (!hasPocketBaseConfigured) {
     return getScheduleFallback()
@@ -282,7 +374,7 @@ async function loadSchedule() {
           return getScheduleFallback()
         }
 
-        return response.items.map((record) => {
+        const entries = response.items.map((record) => {
           const range = parseTimeRange(record.time)
 
           return {
@@ -296,6 +388,8 @@ async function loadSchedule() {
             type: record.class_type || 'Kuliah',
           }
         })
+
+        return mergeScheduleEntries(entries)
       })
       .catch(() => getScheduleFallback())
   }
