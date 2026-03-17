@@ -1,4 +1,5 @@
 import Breadcrumbs from '../components/Breadcrumbs'
+import LoadingPanel from '../components/LoadingPanel'
 import { getSiteSettings } from '../data/archiveApi'
 import useAsyncData from '../hooks/useAsyncData'
 import useDesktopPageMeta from '../hooks/useDesktopPageMeta'
@@ -54,49 +55,52 @@ export default function AboutPage() {
   return (
     <div className="page-content">
       <Breadcrumbs items={[{ label: 'Home', to: '/' }, { label: 'About' }]} />
-
-      <section className="profile-card">
-        <div className="profile-card-body">
-          <div className="profile-hero">
-            <div className="profile-avatar-wrap">
-              <img className="profile-avatar" src={avatarUrl} alt="Profile avatar" />
+      {loading ? (
+        <LoadingPanel variant="page" label="Memuat profil..." />
+      ) : (
+        <section className="profile-card">
+          <div className="profile-card-body">
+            <div className="profile-hero">
+              <div className="profile-avatar-wrap">
+                <img className="profile-avatar" src={avatarUrl} alt="Profile avatar" />
+              </div>
+              <div className="profile-name-wrap">
+                <h2>{creator.aboutName}</h2>
+              </div>
             </div>
-            <div className="profile-name-wrap">
-              <h2>{creator.aboutName}</h2>
+
+            <div className="profile-divider" />
+
+            <p className="profile-summary">
+              <strong>{creator.aboutRole}</strong> {creator.aboutSummary}
+            </p>
+            <div className="profile-socials">
+              {githubUrl ? (
+                <a
+                  href={githubUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="profile-github-link"
+                  aria-label="Open GitHub repository"
+                >
+                  <GitHubIcon />
+                </a>
+              ) : null}
+              {blogUrl ? (
+                <a
+                  href={blogUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="profile-github-link"
+                  aria-label="Open personal blog"
+                >
+                  <BlogIcon />
+                </a>
+              ) : null}
             </div>
           </div>
-
-          <div className="profile-divider" />
-
-          <p className="profile-summary">
-            <strong>{creator.aboutRole}</strong> {creator.aboutSummary}
-          </p>
-          <div className="profile-socials">
-            {githubUrl ? (
-              <a
-                href={githubUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="profile-github-link"
-                aria-label="Open GitHub repository"
-              >
-                <GitHubIcon />
-              </a>
-            ) : null}
-            {blogUrl ? (
-              <a
-                href={blogUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="profile-github-link"
-                aria-label="Open personal blog"
-              >
-                <BlogIcon />
-              </a>
-            ) : null}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import LoadingPanel from '../components/LoadingPanel'
 import { useAdminAuth } from '../context/adminAuthStore'
 import useAsyncData from '../hooks/useAsyncData'
 import { createAdminRecord, fetchAdminCollection, updateAdminRecord } from '../lib/adminAuth'
@@ -98,7 +99,7 @@ export default function AdminSettingsPage() {
         <div className="admin-header">
           <div>
             <h1>Site Settings</h1>
-            <p className="admin-copy">{loading ? 'Loading settings...' : singletonCopy}</p>
+            <p className="admin-copy">{loading ? '' : singletonCopy}</p>
           </div>
           <Link to="/admin" className="ghost-btn">
             Back
@@ -107,67 +108,71 @@ export default function AdminSettingsPage() {
 
         {(error || formError) && <p className="admin-error">{error?.message || formError}</p>}
 
-        <form className="admin-form" onSubmit={handleSubmit}>
-          <label className="admin-field">
-            <span>Site Title</span>
-            <input
-              type="text"
-              value={form.siteTitle}
-              onChange={(event) => setForm((current) => ({ ...current, siteTitle: event.target.value }))}
-            />
-          </label>
+        {loading ? (
+          <LoadingPanel variant="section" label="Memuat site settings..." />
+        ) : (
+          <form className="admin-form" onSubmit={handleSubmit}>
+            <label className="admin-field">
+              <span>Site Title</span>
+              <input
+                type="text"
+                value={form.siteTitle}
+                onChange={(event) => setForm((current) => ({ ...current, siteTitle: event.target.value }))}
+              />
+            </label>
 
-          <label className="admin-field">
-            <span>About Name</span>
-            <input
-              type="text"
-              value={form.aboutName}
-              onChange={(event) => setForm((current) => ({ ...current, aboutName: event.target.value }))}
-            />
-          </label>
+            <label className="admin-field">
+              <span>About Name</span>
+              <input
+                type="text"
+                value={form.aboutName}
+                onChange={(event) => setForm((current) => ({ ...current, aboutName: event.target.value }))}
+              />
+            </label>
 
-          <label className="admin-field">
-            <span>About Role</span>
-            <input
-              type="text"
-              value={form.aboutRole}
-              onChange={(event) => setForm((current) => ({ ...current, aboutRole: event.target.value }))}
-            />
-          </label>
+            <label className="admin-field">
+              <span>About Role</span>
+              <input
+                type="text"
+                value={form.aboutRole}
+                onChange={(event) => setForm((current) => ({ ...current, aboutRole: event.target.value }))}
+              />
+            </label>
 
-          <label className="admin-field admin-field--full">
-            <span>About Summary</span>
-            <textarea
-              rows="5"
-              value={form.aboutSummary}
-              onChange={(event) => setForm((current) => ({ ...current, aboutSummary: event.target.value }))}
-            />
-          </label>
+            <label className="admin-field admin-field--full">
+              <span>About Summary</span>
+              <textarea
+                rows="5"
+                value={form.aboutSummary}
+                onChange={(event) => setForm((current) => ({ ...current, aboutSummary: event.target.value }))}
+              />
+            </label>
 
-          <label className="admin-field">
-            <span>GitHub URL</span>
-            <input
-              type="url"
-              value={form.githubUrl}
-              onChange={(event) => setForm((current) => ({ ...current, githubUrl: event.target.value }))}
-            />
-          </label>
+            <label className="admin-field">
+              <span>GitHub URL</span>
+              <input
+                type="url"
+                value={form.githubUrl}
+                onChange={(event) => setForm((current) => ({ ...current, githubUrl: event.target.value }))}
+              />
+            </label>
 
-          <label className="admin-field">
-            <span>Blog URL</span>
-            <input
-              type="url"
-              value={form.blogUrl}
-              onChange={(event) => setForm((current) => ({ ...current, blogUrl: event.target.value }))}
-            />
-          </label>
+            <label className="admin-field">
+              <span>Blog URL</span>
+              <input
+                type="url"
+                value={form.blogUrl}
+                onChange={(event) => setForm((current) => ({ ...current, blogUrl: event.target.value }))}
+              />
+            </label>
 
-          <div className="admin-actions">
-            <button type="submit" className="action-btn" disabled={submitting}>
-              {submitting ? 'Saving...' : recordId ? 'Update Settings' : 'Create Settings'}
-            </button>
-          </div>
-        </form>
+            <div className="admin-actions">
+              <button type="submit" className="action-btn" disabled={submitting}>
+                {submitting ? 'Saving...' : recordId ? 'Update Settings' : 'Create Settings'}
+              </button>
+            </div>
+          </form>
+        )}
       </section>
     </main>
   )

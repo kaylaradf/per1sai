@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { AdminConfirmDialog, AdminRetroWindow } from '../components/AdminRetroWindow'
+import LoadingPanel from '../components/LoadingPanel'
 import { useAdminAuth } from '../context/adminAuthStore'
 import useAsyncData from '../hooks/useAsyncData'
 import { getMaterialViewTarget } from '../lib/materialActions'
@@ -60,7 +61,7 @@ export default function AdminMaterialManagerPage() {
 
   const heading = useMemo(() => {
     if (loading) {
-      return 'Loading material manager...'
+      return 'Material Manager'
     }
 
     if (!data.course || !data.semester) {
@@ -184,9 +185,7 @@ export default function AdminMaterialManagerPage() {
           <div>
             <h1>{heading}</h1>
             <p className="admin-copy">
-              {loading
-                ? 'Loading materials...'
-                : `${data.materials.length} materi ditemukan. ${categoryCopy[normalizedCategory] || ''}`}
+              {loading ? '' : `${data.materials.length} materi ditemukan. ${categoryCopy[normalizedCategory] || ''}`}
             </p>
           </div>
           <Link to={`/admin/materials/semester/${semesterNumber}`} className="ghost-btn">
@@ -208,7 +207,7 @@ export default function AdminMaterialManagerPage() {
           </div>
 
           {loading ? (
-            <p className="empty-state">Memuat daftar materi...</p>
+            <LoadingPanel variant="section" label="Memuat daftar materi..." />
           ) : data.materials.length ? (
             <>
               <div className="materials-table-wrap">

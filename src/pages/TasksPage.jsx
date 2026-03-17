@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Breadcrumbs from '../components/Breadcrumbs'
+import LoadingPanel from '../components/LoadingPanel'
 import { getTasks } from '../data/archiveApi'
 import useAsyncData from '../hooks/useAsyncData'
 import useDesktopPageMeta from '../hooks/useDesktopPageMeta'
@@ -88,11 +89,14 @@ export default function TasksPage() {
           </select>
         </label>
       </div>
-      {loading && <p className="empty-state">Memuat tugas...</p>}
-      <p className="list-summary">
-        {openTaskCount} tugas terbuka · {overdueCount} expired · task selesai disembunyikan.
-      </p>
-      <div className="kanban-grid">
+      {loading ? (
+        <LoadingPanel variant="page" label="Memuat tugas..." />
+      ) : (
+        <>
+          <p className="list-summary">
+            {openTaskCount} tugas terbuka · {overdueCount} expired · task selesai disembunyikan.
+          </p>
+          <div className="kanban-grid">
         {columns.map((column) => (
           <section key={column} className="kanban-column task-tab-panel">
             <h2>
@@ -120,7 +124,9 @@ export default function TasksPage() {
             </div>
           </section>
         ))}
-      </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }

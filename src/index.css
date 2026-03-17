@@ -77,6 +77,18 @@ a {
   animation: daily-splash-blink 1s steps(2, end) infinite;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 @keyframes daily-splash-float {
   0%,
   100% {
@@ -500,6 +512,37 @@ a {
   font-size: 0.86rem;
   padding: 0.5rem 0.65rem;
   border: 2px solid #141414;
+}
+
+.loading-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border: 2px solid #141414;
+  background: #fff;
+  padding: 0.85rem;
+  overflow: hidden;
+}
+
+.loading-panel--page {
+  min-height: 15rem;
+}
+
+.loading-panel--section {
+  min-height: 12rem;
+}
+
+.loading-panel--card {
+  min-height: 8rem;
+}
+
+.loading-panel__visual {
+  width: min(100%, 15rem);
+  height: auto;
+  display: block;
+  transform-origin: center;
+  animation: daily-splash-hourglass 1.15s ease-in-out infinite;
 }
 
 .text-link {
@@ -1552,6 +1595,26 @@ a {
 
   .daily-splash__visual {
     width: min(100%, 19rem);
+  }
+
+  .loading-panel {
+    padding: 0.65rem;
+  }
+
+  .loading-panel--page {
+    min-height: 12rem;
+  }
+
+  .loading-panel--section {
+    min-height: 10rem;
+  }
+
+  .loading-panel--card {
+    min-height: 6.75rem;
+  }
+
+  .loading-panel__visual {
+    width: min(100%, 12rem);
   }
 
   .folder-grid {

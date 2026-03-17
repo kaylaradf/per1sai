@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import AdminRetroWindow from '../components/AdminRetroWindow'
+import LoadingPanel from '../components/LoadingPanel'
 import { useAdminAuth } from '../context/adminAuthStore'
 import useAsyncData from '../hooks/useAsyncData'
 import { createAdminCourse, fetchAdminMaterialsOverview } from '../lib/adminMaterials'
@@ -82,9 +83,7 @@ export default function AdminMaterialsPage() {
             <div>
               <h1>{activeSemester?.name || `Semester ${activeSemesterNumber}`}</h1>
               <p className="admin-copy">
-                {loading
-                  ? 'Loading courses...'
-                  : `${activeSemester?.courses ?? 0} mata kuliah · ${activeSemester?.materials ?? 0} materi`}
+                {loading ? '' : `${activeSemester?.courses ?? 0} mata kuliah · ${activeSemester?.materials ?? 0} materi`}
               </p>
             </div>
             <Link to="/admin/materials" className="ghost-btn">
@@ -104,7 +103,7 @@ export default function AdminMaterialsPage() {
           </div>
 
           {loading ? (
-            <p className="empty-state">Memuat daftar mata kuliah...</p>
+            <LoadingPanel variant="section" label="Memuat daftar mata kuliah..." />
           ) : activeSemester?.courseItems.length ? (
             <>
               <div className="materials-table-wrap">
@@ -256,27 +255,29 @@ export default function AdminMaterialsPage() {
             <div>
               <h2>Semesters</h2>
               <p className="admin-copy">
-                {loading
-                  ? 'Loading semesters...'
-                  : `${data.totalMaterials} materials across ${data.totalCourses} courses.`}
+                {loading ? '' : `${data.totalMaterials} materials across ${data.totalCourses} courses.`}
               </p>
             </div>
           </div>
 
-          <div className="admin-grid admin-grid--semesters">
-            {data.materialGroups.map((semester) => (
-              <Link
-                key={semester.id}
-                to={`/admin/materials/semester/${semester.number}`}
-                className={`admin-card admin-card--interactive admin-card--mobile-list ${
-                  semester.number === activeSemesterNumber ? 'admin-card--active' : ''
-                }`}
-              >
-                <h3>{semester.name}</h3>
-                <p>{loading ? 'Loading...' : `${semester.courses} mata kuliah · ${semester.materials} materi`}</p>
-              </Link>
-            ))}
-          </div>
+          {loading ? (
+            <LoadingPanel variant="section" label="Memuat daftar semester..." />
+          ) : (
+            <div className="admin-grid admin-grid--semesters">
+              {data.materialGroups.map((semester) => (
+                <Link
+                  key={semester.id}
+                  to={`/admin/materials/semester/${semester.number}`}
+                  className={`admin-card admin-card--interactive admin-card--mobile-list ${
+                    semester.number === activeSemesterNumber ? 'admin-card--active' : ''
+                  }`}
+                >
+                  <h3>{semester.name}</h3>
+                  <p>{`${semester.courses} mata kuliah · ${semester.materials} materi`}</p>
+                </Link>
+              ))}
+            </div>
+          )}
         </section>
       </section>
     </main>

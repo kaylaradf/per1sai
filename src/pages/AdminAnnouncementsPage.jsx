@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AdminConfirmDialog, AdminRetroWindow } from '../components/AdminRetroWindow'
+import LoadingPanel from '../components/LoadingPanel'
 import { useAdminAuth } from '../context/adminAuthStore'
 import useAsyncData from '../hooks/useAsyncData'
 import { createAdminRecord, deleteAdminRecord, fetchAdminCollection, updateAdminRecord } from '../lib/adminAuth'
@@ -223,9 +224,7 @@ export default function AdminAnnouncementsPage() {
           <div>
             <h1>Announcements</h1>
             <p className="admin-copy">
-              {loading
-                ? 'Loading announcements...'
-                : `${data.announcements.length} records. Kelola draft, publish, dan metadata pengumuman.`}
+              {loading ? '' : `${data.announcements.length} records. Kelola draft, publish, dan metadata pengumuman.`}
             </p>
           </div>
           <Link to="/admin" className="ghost-btn">
@@ -278,12 +277,11 @@ export default function AdminAnnouncementsPage() {
             </button>
           </div>
 
-          <p className="list-summary">Menampilkan {filteredAnnouncements.length} dari {data.announcements.length} pengumuman.</p>
-
           {loading ? (
-            <p className="empty-state">Memuat pengumuman...</p>
+            <LoadingPanel variant="section" label="Memuat pengumuman..." />
           ) : filteredAnnouncements.length ? (
             <>
+              <p className="list-summary">Menampilkan {filteredAnnouncements.length} dari {data.announcements.length} pengumuman.</p>
               <div className="materials-table-wrap">
                 <table className="materials-table admin-announcements-table">
                   <thead>
@@ -348,7 +346,10 @@ export default function AdminAnnouncementsPage() {
               </div>
             </>
           ) : (
-            <p className="empty-state">Belum ada pengumuman yang cocok dengan filter.</p>
+            <>
+              <p className="list-summary">Menampilkan {filteredAnnouncements.length} dari {data.announcements.length} pengumuman.</p>
+              <p className="empty-state">Belum ada pengumuman yang cocok dengan filter.</p>
+            </>
           )}
         </section>
       </section>

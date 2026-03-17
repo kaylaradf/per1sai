@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AdminConfirmDialog, AdminRetroWindow } from '../components/AdminRetroWindow'
+import LoadingPanel from '../components/LoadingPanel'
 import { useAdminAuth } from '../context/adminAuthStore'
 import useAsyncData from '../hooks/useAsyncData'
 import { createAdminRecord, deleteAdminRecord, fetchAdminCollection, updateAdminRecord } from '../lib/adminAuth'
@@ -469,9 +470,7 @@ export default function AdminSchedulePage() {
         <div className="admin-header">
           <div>
             <h1>Schedule</h1>
-            <p className="admin-copy">
-              {loading ? 'Loading schedule...' : `${semesterEntries.length} entry untuk semester yang dipilih.`}
-            </p>
+            <p className="admin-copy">{loading ? '' : `${semesterEntries.length} entry untuk semester yang dipilih.`}</p>
           </div>
           <Link to="/admin" className="ghost-btn">
             Back
@@ -523,7 +522,7 @@ export default function AdminSchedulePage() {
           </div>
 
           {loading ? (
-            <p className="empty-state">Memuat grid jadwal...</p>
+            <LoadingPanel variant="section" label="Memuat grid jadwal..." />
           ) : (
             <div className="admin-schedule-wrap">
               <table className="admin-schedule-table">

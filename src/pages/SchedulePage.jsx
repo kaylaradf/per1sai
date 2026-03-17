@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Breadcrumbs from '../components/Breadcrumbs'
+import LoadingPanel from '../components/LoadingPanel'
 import { getScheduleForDay, getWeekdayLabel, getWeekdays } from '../data/archiveApi'
 import useAsyncData from '../hooks/useAsyncData'
 import useDesktopPageMeta from '../hooks/useDesktopPageMeta'
@@ -28,27 +29,33 @@ export default function SchedulePage() {
           </button>
         ))}
       </div>
-      <p className="list-summary">
-        Menampilkan {entries.length} kelas untuk {selectedLabel}. Hari ini: {getWeekdayLabel(dayIndex)}.
-      </p>
-
       {loading ? (
-        <p className="empty-state">Memuat jadwal untuk {selectedLabel}...</p>
+        <LoadingPanel variant="page" label={`Memuat jadwal untuk ${selectedLabel}...`} />
       ) : entries.length === 0 ? (
-        <p className="empty-state">Tidak ada jadwal pada hari {selectedLabel}.</p>
+        <>
+          <p className="list-summary">
+            Menampilkan {entries.length} kelas untuk {selectedLabel}. Hari ini: {getWeekdayLabel(dayIndex)}.
+          </p>
+          <p className="empty-state">Tidak ada jadwal pada hari {selectedLabel}.</p>
+        </>
       ) : (
-        <div className="schedule-list">
-          {entries.map((entry) => (
-            <article key={entry.id} className="schedule-card">
-              <h3>{entry.course}</h3>
-              <p>
-                {entry.start} - {entry.end}
-              </p>
-              <p>{entry.room}</p>
-              <p>{entry.lecturer}</p>
-            </article>
-          ))}
-        </div>
+        <>
+          <p className="list-summary">
+            Menampilkan {entries.length} kelas untuk {selectedLabel}. Hari ini: {getWeekdayLabel(dayIndex)}.
+          </p>
+          <div className="schedule-list">
+            {entries.map((entry) => (
+              <article key={entry.id} className="schedule-card">
+                <h3>{entry.course}</h3>
+                <p>
+                  {entry.start} - {entry.end}
+                </p>
+                <p>{entry.room}</p>
+                <p>{entry.lecturer}</p>
+              </article>
+            ))}
+          </div>
+        </>
       )}
     </div>
   )

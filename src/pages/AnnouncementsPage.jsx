@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Breadcrumbs from '../components/Breadcrumbs'
+import LoadingPanel from '../components/LoadingPanel'
 import { getAnnouncementsFeed } from '../data/archiveApi'
 import useAsyncData from '../hooks/useAsyncData'
 import useDesktopPageMeta from '../hooks/useDesktopPageMeta'
@@ -64,27 +65,33 @@ export default function AnnouncementsPage() {
           </select>
         </label>
       </div>
-      <p className="list-summary">
-        Menampilkan {filteredItems.length} dari {items.length} pengumuman.
-      </p>
-
       {loading ? (
-        <p className="empty-state">Memuat pengumuman...</p>
+        <LoadingPanel variant="page" label="Memuat pengumuman..." />
       ) : filteredItems.length === 0 ? (
-        <p className="empty-state">Tidak ada pengumuman yang cocok dengan filter saat ini.</p>
+        <>
+          <p className="list-summary">
+            Menampilkan {filteredItems.length} dari {items.length} pengumuman.
+          </p>
+          <p className="empty-state">Tidak ada pengumuman yang cocok dengan filter saat ini.</p>
+        </>
       ) : (
-        <div className="announcement-list">
-          {filteredItems.map((item) => (
-            <article key={item.id} className="announcement-card">
-              <h3>{item.title}</h3>
-              <p>{item.body}</p>
-              <div className="card-meta-row">
-                <span className="type-chip">{item.category}</span>
-                <span>{item.time}</span>
-              </div>
-            </article>
-          ))}
-        </div>
+        <>
+          <p className="list-summary">
+            Menampilkan {filteredItems.length} dari {items.length} pengumuman.
+          </p>
+          <div className="announcement-list">
+            {filteredItems.map((item) => (
+              <article key={item.id} className="announcement-card">
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+                <div className="card-meta-row">
+                  <span className="type-chip">{item.category}</span>
+                  <span>{item.time}</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </>
       )}
     </div>
   )

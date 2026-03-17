@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AdminConfirmDialog, AdminRetroWindow } from '../components/AdminRetroWindow'
+import LoadingPanel from '../components/LoadingPanel'
 import { useAdminAuth } from '../context/adminAuthStore'
 import useAsyncData from '../hooks/useAsyncData'
 import { createAdminRecord, deleteAdminRecord, fetchAdminCollection, updateAdminRecord } from '../lib/adminAuth'
@@ -235,9 +236,7 @@ export default function AdminTasksPage() {
           <div>
             <h1>Tasks</h1>
             <p className="admin-copy">
-              {loading
-                ? 'Loading tasks...'
-                : `${data.tasks.length} tasks. In Progress ${statusSummary.inProgress} · Expired ${statusSummary.expired}.`}
+              {loading ? '' : `${data.tasks.length} tasks. In Progress ${statusSummary.inProgress} · Expired ${statusSummary.expired}.`}
             </p>
           </div>
           <Link to="/admin" className="ghost-btn">
@@ -248,10 +247,12 @@ export default function AdminTasksPage() {
         {(error || formError) && <p className="admin-error">{error?.message || formError}</p>}
 
         <section className="admin-section">
-          <div className="admin-status-row">
-            <span className="admin-status-chip">In Progress: {statusSummary.inProgress}</span>
-            <span className="admin-status-chip admin-status-chip--danger">Expired: {statusSummary.expired}</span>
-          </div>
+          {!loading ? (
+            <div className="admin-status-row">
+              <span className="admin-status-chip">In Progress: {statusSummary.inProgress}</span>
+              <span className="admin-status-chip admin-status-chip--danger">Expired: {statusSummary.expired}</span>
+            </div>
+          ) : null}
 
           <div className="toolbar admin-toolbar admin-toolbar--multi">
             <label className="toolbar-field">
@@ -316,12 +317,11 @@ export default function AdminTasksPage() {
             </button>
           </div>
 
-          <p className="list-summary">Menampilkan {filteredTasks.length} dari {data.tasks.length} tasks.</p>
-
           {loading ? (
-            <p className="empty-state">Memuat task...</p>
+            <LoadingPanel variant="section" label="Memuat task..." />
           ) : filteredTasks.length ? (
             <>
+              <p className="list-summary">Menampilkan {filteredTasks.length} dari {data.tasks.length} tasks.</p>
               <div className="materials-table-wrap">
                 <table className="materials-table admin-tasks-table">
                   <thead>
@@ -416,7 +416,10 @@ export default function AdminTasksPage() {
               </div>
             </>
           ) : (
-            <p className="empty-state">Belum ada task yang cocok dengan filter.</p>
+            <>
+              <p className="list-summary">Menampilkan {filteredTasks.length} dari {data.tasks.length} tasks.</p>
+              <p className="empty-state">Belum ada task yang cocok dengan filter.</p>
+            </>
           )}
         </section>
       </section>

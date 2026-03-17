@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import Breadcrumbs from '../components/Breadcrumbs'
 import FolderGrid from '../components/FolderGrid'
+import LoadingPanel from '../components/LoadingPanel'
 import { getSemesterById } from '../data/archiveApi'
 import useAsyncData from '../hooks/useAsyncData'
 import useDesktopPageMeta from '../hooks/useDesktopPageMeta'
@@ -22,7 +23,7 @@ export default function SemesterPage() {
     return (
       <div className="page-content">
         <Breadcrumbs items={[{ label: 'Home', to: '/' }, { label: 'Loading' }]} />
-        <p className="empty-state">Memuat semester...</p>
+        <LoadingPanel variant="page" label="Memuat semester..." />
       </div>
     )
   }

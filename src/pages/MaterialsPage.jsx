@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Breadcrumbs from '../components/Breadcrumbs'
+import LoadingPanel from '../components/LoadingPanel'
 import { getCourseById, getMaterials, getSemesterById } from '../data/archiveApi'
 import useAsyncData from '../hooks/useAsyncData'
 import useDesktopPageMeta from '../hooks/useDesktopPageMeta'
@@ -50,7 +51,7 @@ export default function MaterialsPage() {
     return (
       <div className="page-content">
         <Breadcrumbs items={[{ label: 'Home', to: '/' }, { label: 'Loading' }]} />
-        <p className="empty-state">Memuat daftar materi...</p>
+        <LoadingPanel variant="page" label="Memuat daftar materi..." />
       </div>
     )
   }

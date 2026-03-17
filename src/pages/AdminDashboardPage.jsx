@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import LoadingPanel from '../components/LoadingPanel'
 import { useAdminAuth } from '../context/adminAuthStore'
 import useAsyncData from '../hooks/useAsyncData'
 import { fetchAdminCollection } from '../lib/adminAuth'
@@ -45,7 +46,7 @@ export default function AdminDashboardPage() {
 
   const materialCopy = useMemo(() => {
     if (loading) {
-      return 'Loading controls...'
+      return ''
     }
 
     return `${data.totalMaterials} materials across ${data.totalCourses} courses. `
@@ -76,24 +77,28 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          <div className="admin-grid">
-            <Link to="/admin/materials" className="admin-card admin-card--interactive admin-card--mobile-list admin-card--dashboard">
-              <h3>Semester</h3>
-              <p>{loading ? 'Loading...' : '8 semester fixed'}</p>
-              <p className="task-meta">Klik untuk membuka daftar semester, lalu turun ke daftar mata kuliah.</p>
-            </Link>
-            {data.summaries.map((collection) => (
-              <Link
-                key={collection.id}
-                to={collection.to}
-                className="admin-card admin-card--interactive admin-card--mobile-list admin-card--dashboard"
-              >
-                <h3>{collection.label}</h3>
-                <p>{loading ? 'Loading...' : `${collection.total ?? 0} records`}</p>
-                <p className="task-meta">Klik untuk membuka halaman CRUD {collection.label.toLowerCase()}.</p>
+          {loading ? (
+            <LoadingPanel variant="section" label="Memuat control admin..." />
+          ) : (
+            <div className="admin-grid">
+              <Link to="/admin/materials" className="admin-card admin-card--interactive admin-card--mobile-list admin-card--dashboard">
+                <h3>Semester</h3>
+                <p>8 semester fixed</p>
+                <p className="task-meta">Klik untuk membuka daftar semester, lalu turun ke daftar mata kuliah.</p>
               </Link>
-            ))}
-          </div>
+              {data.summaries.map((collection) => (
+                <Link
+                  key={collection.id}
+                  to={collection.to}
+                  className="admin-card admin-card--interactive admin-card--mobile-list admin-card--dashboard"
+                >
+                  <h3>{collection.label}</h3>
+                  <p>{`${collection.total ?? 0} records`}</p>
+                  <p className="task-meta">Klik untuk membuka halaman CRUD {collection.label.toLowerCase()}.</p>
+                </Link>
+              ))}
+            </div>
+          )}
         </section>
       </section>
     </main>

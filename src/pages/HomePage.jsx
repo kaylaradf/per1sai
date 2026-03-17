@@ -1,5 +1,6 @@
 import Breadcrumbs from '../components/Breadcrumbs'
 import FolderGrid from '../components/FolderGrid'
+import LoadingPanel from '../components/LoadingPanel'
 import { getSemesters } from '../data/archiveApi'
 import useAsyncData from '../hooks/useAsyncData'
 import useDesktopPageMeta from '../hooks/useDesktopPageMeta'
@@ -26,7 +27,7 @@ export default function HomePage() {
       <p className="page-description">
         Kasih Paha
       </p>
-      {loading ? <p className="empty-state">Memuat daftar semester...</p> : <FolderGrid items={folders} />}
+      {loading ? <LoadingPanel variant="page" label="Memuat daftar semester..." /> : <FolderGrid items={folders} />}
     </div>
   )
 }
