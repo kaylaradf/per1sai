@@ -792,6 +792,38 @@ a {
   width: min(100%, 74rem);
 }
 
+.admin-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(20, 20, 20, 0.34);
+}
+
+.admin-modal-window {
+  width: min(100%, 34rem);
+  border: 2px solid #141414;
+  background: var(--paper);
+  box-shadow: 4px 4px 0 0 #141414;
+}
+
+.admin-modal-window.is-wide {
+  width: min(100%, 56rem);
+}
+
+.admin-modal-body {
+  padding: 1rem;
+}
+
+.admin-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 1rem 1rem;
+}
+
 .admin-header {
   display: flex;
   align-items: flex-start;
@@ -906,10 +938,6 @@ a {
 
 .admin-toolbar--multi {
   grid-template-columns: minmax(0, 1.4fr) repeat(4, minmax(8rem, 0.7fr));
-}
-
-.admin-toolbar-action {
-  min-height: 2.2rem;
 }
 
 .admin-grid--semesters {
@@ -1104,8 +1132,26 @@ a {
   white-space: nowrap;
 }
 
+.admin-schedule-time.is-break {
+  background: #f3f4f6;
+  font-weight: 700;
+}
+
 .admin-schedule-cell {
   min-width: 10rem;
+}
+
+.admin-schedule-break {
+  background: repeating-linear-gradient(
+    135deg,
+    #f3f4f6,
+    #f3f4f6 8px,
+    #ececec 8px,
+    #ececec 16px
+  );
+  text-align: center;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .admin-schedule-stack {

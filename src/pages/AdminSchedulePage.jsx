@@ -1,27 +1,32 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { AdminConfirmDialog, AdminRetroWindow } from '../components/AdminRetroWindow'
 import { useAdminAuth } from '../context/adminAuthStore'
 import useAsyncData from '../hooks/useAsyncData'
 import { createAdminRecord, deleteAdminRecord, fetchAdminCollection, updateAdminRecord } from '../lib/adminAuth'
 import {
   fetchAdminSelectors,
   filterCoursesBySemester,
+  findScheduleSlot,
   formatAdminDateLabel,
   getDayLabel,
+  getScheduleSlotOptions,
   groupScheduleIntoGrid,
 } from '../lib/adminResources'
 
 function createEmptyForm() {
+  const firstSlot = getScheduleSlotOptions()[0]
+
   return {
     classType: 'Kuliah',
     courseId: '',
     dayOfWeek: '1',
-    endTime: '',
+    endTime: firstSlot?.endTime || '',
     isActive: true,
     lecturer: '',
     room: '',
     semesterId: '',
-    startTime: '',
+    startTime: firstSlot?.startTime || '',
   }
 }
 
@@ -31,6 +36,8 @@ export default function AdminSchedulePage() {
   const [selectedSemesterId, setSelectedSemesterId] = useState('')
   const [editingId, setEditingId] = useState('')
   const [form, setForm] = useState(createEmptyForm)
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [pendingDelete, setPendingDelete] = useState(null)
   const [formError, setFormError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
@@ -84,6 +91,7 @@ export default function AdminSchedulePage() {
     [data.entries, selectedSemesterId],
   )
   const grid = useMemo(() => groupScheduleIntoGrid(semesterEntries), [semesterEntries])
+  const slotOptions = useMemo(() => getScheduleSlotOptions(), [])
   const availableCourses = useMemo(
     () => filterCoursesBySemester(data.courses, form.semesterId || selectedSemesterId),
     [data.courses, form.semesterId, selectedSemesterId],
@@ -96,6 +104,11 @@ export default function AdminSchedulePage() {
       semesterId: selectedSemesterId || '',
     })
     setFormError('')
+  }
+
+  function closeFormModal() {
+    resetForm()
+    setIsFormOpen(false)
   }
 
   function startEditing(entry) {
@@ -112,22 +125,27 @@ export default function AdminSchedulePage() {
       startTime: entry.startTime,
     })
     setFormError('')
+    setIsFormOpen(true)
   }
 
   function openCreateFromCell(dayOfWeek, startTime, endTime) {
+    const selectedSlot = findScheduleSlot(startTime, endTime)
+
     setEditingId('')
     setForm({
       ...createEmptyForm(),
       dayOfWeek: String(dayOfWeek),
-      endTime,
+      endTime: selectedSlot?.endTime || endTime,
       semesterId: selectedSemesterId || '',
-      startTime,
+      startTime: selectedSlot?.startTime || startTime,
     })
     setFormError('')
+    setIsFormOpen(true)
   }
 
   function openBlankCreate() {
     resetForm()
+    setIsFormOpen(true)
   }
 
   async function handleSubmit(event) {
@@ -135,6 +153,11 @@ export default function AdminSchedulePage() {
 
     if (!form.semesterId || !form.courseId || !form.startTime || !form.endTime) {
       setFormError('Semester, matkul, start time, dan end time wajib diisi.')
+      return
+    }
+
+    if (!findScheduleSlot(form.startTime, form.endTime)) {
+      setFormError('Slot waktu harus mengikuti grid jadwal resmi.')
       return
     }
 
@@ -168,7 +191,7 @@ export default function AdminSchedulePage() {
         await createAdminRecord('schedule', auth.token, payload)
       }
 
-      resetForm()
+      closeFormModal()
       setRefreshSeed((value) => value + 1)
     } catch (submitError) {
       setFormError(submitError.message || 'Gagal menyimpan jadwal')
@@ -177,8 +200,8 @@ export default function AdminSchedulePage() {
     }
   }
 
-  async function handleDelete(recordId) {
-    if (!window.confirm('Hapus entry jadwal ini?')) {
+  async function confirmDelete() {
+    if (!pendingDelete) {
       return
     }
 
@@ -186,12 +209,13 @@ export default function AdminSchedulePage() {
     setFormError('')
 
     try {
-      await deleteAdminRecord('schedule', recordId, auth.token)
+      await deleteAdminRecord('schedule', pendingDelete.id, auth.token)
 
-      if (editingId === recordId) {
-        resetForm()
+      if (editingId === pendingDelete.id) {
+        closeFormModal()
       }
 
+      setPendingDelete(null)
       setRefreshSeed((value) => value + 1)
     } catch (deleteError) {
       setFormError(deleteError.message || 'Gagal menghapus jadwal')
@@ -304,33 +328,39 @@ export default function AdminSchedulePage() {
                   ) : (
                     grid.rows.map((row) => (
                       <tr key={row.key}>
-                        <td className="admin-schedule-time">{row.label}</td>
-                        {grid.columns.map((column) => (
-                          <td key={`${row.key}-${column.dayIndex}`} className="admin-schedule-cell">
-                            <button
-                              type="button"
-                              className="admin-schedule-empty"
-                              onClick={() => openCreateFromCell(column.dayIndex, row.startTime, row.endTime)}
-                            >
-                              +
-                            </button>
-                            <div className="admin-schedule-stack">
-                              {row.cells[column.dayIndex].map((entry) => (
-                                <button
-                                  key={entry.id}
-                                  type="button"
-                                  className={`admin-schedule-entry ${entry.isActive ? '' : 'is-muted'}`}
-                                  onClick={() => startEditing(entry)}
-                                >
-                                  <strong>{entry.courseCode || entry.courseName}</strong>
-                                  <span>{entry.room || '-'}</span>
-                                  <span>{entry.lecturer || '-'}</span>
-                                  <span>{entry.classType}</span>
-                                </button>
-                              ))}
-                            </div>
+                        <td className={`admin-schedule-time ${row.type === 'break' ? 'is-break' : ''}`}>{row.label}</td>
+                        {row.type === 'break' ? (
+                          <td colSpan={grid.columns.length} className="admin-schedule-break">
+                            Waktu istirahat
                           </td>
-                        ))}
+                        ) : (
+                          grid.columns.map((column) => (
+                            <td key={`${row.key}-${column.dayIndex}`} className="admin-schedule-cell">
+                              <button
+                                type="button"
+                                className="admin-schedule-empty"
+                                onClick={() => openCreateFromCell(column.dayIndex, row.startTime, row.endTime)}
+                              >
+                                +
+                              </button>
+                              <div className="admin-schedule-stack">
+                                {row.cells[column.dayIndex].map((entry) => (
+                                  <button
+                                    key={entry.id}
+                                    type="button"
+                                    className={`admin-schedule-entry ${entry.isActive ? '' : 'is-muted'}`}
+                                    onClick={() => startEditing(entry)}
+                                  >
+                                    <strong>{entry.courseCode || entry.courseName}</strong>
+                                    <span>{entry.room || '-'}</span>
+                                    <span>{entry.lecturer || '-'}</span>
+                                    <span>{entry.classType}</span>
+                                  </button>
+                                ))}
+                              </div>
+                            </td>
+                          ))
+                        )}
                       </tr>
                     ))
                   )}
@@ -339,18 +369,40 @@ export default function AdminSchedulePage() {
             </div>
           )}
         </section>
+      </section>
 
-        <section className="admin-section">
-          <div className="admin-section-head">
-            <div>
-              <h2>{editingId ? 'Edit Entry' : 'Tambah Entry'}</h2>
-              <p className="admin-copy">
-                Subject dan time dibuat otomatis dari matkul dan slot waktu. Entry nonaktif tetap terlihat di admin.
-              </p>
+      {isFormOpen && (
+        <AdminRetroWindow
+          title={editingId ? 'Edit Entry' : 'Tambah Entry'}
+          onClose={closeFormModal}
+          wide
+          footer={
+            <div className="admin-inline-actions">
+              {editingId && (
+                <>
+                  <button type="button" className="ghost-btn" onClick={handleDuplicate} disabled={submitting}>
+                    Duplicate
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost-btn"
+                    onClick={() => setPendingDelete(data.entries.find((entry) => entry.id === editingId) || null)}
+                    disabled={submitting}
+                  >
+                    Delete
+                  </button>
+                </>
+              )}
+              <button type="button" className="ghost-btn" onClick={closeFormModal} disabled={submitting}>
+                Cancel
+              </button>
+              <button type="submit" form="schedule-form" className="action-btn" disabled={submitting}>
+                {submitting ? 'Saving...' : editingId ? 'Update Entry' : 'Create Entry'}
+              </button>
             </div>
-          </div>
-
-          <form className="admin-form admin-form--materials" onSubmit={handleSubmit}>
+          }
+        >
+          <form id="schedule-form" className="admin-form admin-form--materials" onSubmit={handleSubmit}>
             <label className="admin-field">
               <span>Semester</span>
               <select
@@ -410,23 +462,29 @@ export default function AdminSchedulePage() {
             </label>
 
             <label className="admin-field">
-              <span>Start Time</span>
-              <input
-                type="time"
-                value={form.startTime}
-                onChange={(event) => setForm((current) => ({ ...current, startTime: event.target.value }))}
-                required
-              />
-            </label>
+              <span>Slot Waktu</span>
+              <select
+                value={`${form.startTime}-${form.endTime}`}
+                onChange={(event) => {
+                  const nextSlot = slotOptions.find((slot) => slot.key === event.target.value)
 
-            <label className="admin-field">
-              <span>End Time</span>
-              <input
-                type="time"
-                value={form.endTime}
-                onChange={(event) => setForm((current) => ({ ...current, endTime: event.target.value }))}
-                required
-              />
+                  if (!nextSlot) {
+                    return
+                  }
+
+                  setForm((current) => ({
+                    ...current,
+                    endTime: nextSlot.endTime,
+                    startTime: nextSlot.startTime,
+                  }))
+                }}
+              >
+                {slotOptions.map((slot) => (
+                  <option key={slot.key} value={slot.key}>
+                    {slot.label}
+                  </option>
+                ))}
+              </select>
             </label>
 
             <label className="admin-field">
@@ -456,43 +514,28 @@ export default function AdminSchedulePage() {
               <span>Active</span>
             </label>
 
-            <div className="admin-actions admin-actions--split">
-              <div className="admin-copy">
-                {editingId
-                  ? `Editing entry. Last update ${formatAdminDateLabel(
-                      data.entries.find((entry) => entry.id === editingId)?.updated,
-                      true,
-                    )}.`
-                  : 'Mode tambah aktif.'}
-              </div>
-              <div className="admin-inline-actions">
-                {editingId && (
-                  <>
-                    <button type="button" className="ghost-btn" onClick={handleDuplicate} disabled={submitting}>
-                      Duplicate
-                    </button>
-                    <button
-                      type="button"
-                      className="ghost-btn"
-                      onClick={() => handleDelete(editingId)}
-                      disabled={submitting}
-                    >
-                      Delete
-                    </button>
-                    <button type="button" className="ghost-btn" onClick={resetForm} disabled={submitting}>
-                      Cancel
-                    </button>
-                  </>
-                )}
-                <button type="submit" className="action-btn" disabled={submitting}>
-                  {submitting ? 'Saving...' : editingId ? 'Update Entry' : 'Create Entry'}
-                </button>
-              </div>
-            </div>
+            <p className="admin-copy admin-field--full">
+              {editingId
+                ? `Editing entry. Last update ${formatAdminDateLabel(
+                    data.entries.find((entry) => entry.id === editingId)?.updated,
+                    true,
+                  )}.`
+                : 'Mode tambah aktif.'}
+            </p>
           </form>
-        </section>
-      </section>
+        </AdminRetroWindow>
+      )}
+
+      {pendingDelete && (
+        <AdminConfirmDialog
+          title="Hapus Entry Jadwal"
+          message={`Hapus entry "${pendingDelete.courseCode || pendingDelete.courseName}" dari grid jadwal?`}
+          onCancel={() => setPendingDelete(null)}
+          onConfirm={confirmDelete}
+          busy={submitting}
+          confirmLabel="Delete"
+        />
+      )}
     </main>
   )
 }
-

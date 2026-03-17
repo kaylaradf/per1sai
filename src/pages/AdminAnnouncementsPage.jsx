@@ -1,5 +1,6 @@
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { AdminConfirmDialog, AdminRetroWindow } from '../components/AdminRetroWindow'
 import { useAdminAuth } from '../context/adminAuthStore'
 import useAsyncData from '../hooks/useAsyncData'
 import { createAdminRecord, deleteAdminRecord, fetchAdminCollection, updateAdminRecord } from '../lib/adminAuth'
@@ -47,9 +48,10 @@ export default function AdminAnnouncementsPage() {
   const [publishedFilter, setPublishedFilter] = useState('all')
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [form, setForm] = useState(createEmptyForm)
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [pendingDelete, setPendingDelete] = useState(null)
   const [submitting, setSubmitting] = useState(false)
   const [formError, setFormError] = useState('')
-  const sectionRef = useRef(null)
 
   const { data, loading, error } = useAsyncData(
     async () => {
@@ -121,6 +123,16 @@ export default function AdminAnnouncementsPage() {
     setFormError('')
   }
 
+  function closeFormModal() {
+    resetForm()
+    setIsFormOpen(false)
+  }
+
+  function openCreateModal() {
+    resetForm()
+    setIsFormOpen(true)
+  }
+
   function startEditing(announcement) {
     setEditingId(announcement.id)
     setForm({
@@ -134,7 +146,7 @@ export default function AdminAnnouncementsPage() {
       title: announcement.title,
     })
     setFormError('')
-    sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    setIsFormOpen(true)
   }
 
   async function handleSubmit(event) {
@@ -171,7 +183,7 @@ export default function AdminAnnouncementsPage() {
         await createAdminRecord('announcements', auth.token, payload)
       }
 
-      resetForm()
+      closeFormModal()
       setRefreshSeed((value) => value + 1)
     } catch (submitError) {
       setFormError(submitError.message || 'Gagal menyimpan pengumuman')
@@ -180,8 +192,8 @@ export default function AdminAnnouncementsPage() {
     }
   }
 
-  async function handleDelete(recordId) {
-    if (!window.confirm('Hapus pengumuman ini?')) {
+  async function confirmDelete() {
+    if (!pendingDelete) {
       return
     }
 
@@ -189,12 +201,13 @@ export default function AdminAnnouncementsPage() {
     setFormError('')
 
     try {
-      await deleteAdminRecord('announcements', recordId, auth.token)
+      await deleteAdminRecord('announcements', pendingDelete.id, auth.token)
 
-      if (editingId === recordId) {
-        resetForm()
+      if (editingId === pendingDelete.id) {
+        closeFormModal()
       }
 
+      setPendingDelete(null)
       setRefreshSeed((value) => value + 1)
     } catch (deleteError) {
       setFormError(deleteError.message || 'Gagal menghapus pengumuman')
@@ -260,14 +273,7 @@ export default function AdminAnnouncementsPage() {
                 ))}
               </select>
             </label>
-            <button
-              type="button"
-              className="action-btn admin-toolbar-action"
-              onClick={() => {
-                resetForm()
-                sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-              }}
-            >
+            <button type="button" className="action-btn" onClick={openCreateModal}>
               Tambah Pengumuman
             </button>
           </div>
@@ -308,7 +314,7 @@ export default function AdminAnnouncementsPage() {
                             <button type="button" className="action-btn" onClick={() => startEditing(announcement)}>
                               Edit
                             </button>
-                            <button type="button" className="ghost-btn" onClick={() => handleDelete(announcement.id)}>
+                            <button type="button" className="ghost-btn" onClick={() => setPendingDelete(announcement)}>
                               Delete
                             </button>
                           </div>
@@ -333,7 +339,7 @@ export default function AdminAnnouncementsPage() {
                       <button type="button" className="action-btn" onClick={() => startEditing(announcement)}>
                         Edit
                       </button>
-                      <button type="button" className="ghost-btn" onClick={() => handleDelete(announcement.id)}>
+                      <button type="button" className="ghost-btn" onClick={() => setPendingDelete(announcement)}>
                         Delete
                       </button>
                     </div>
@@ -345,16 +351,25 @@ export default function AdminAnnouncementsPage() {
             <p className="empty-state">Belum ada pengumuman yang cocok dengan filter.</p>
           )}
         </section>
+      </section>
 
-        <section className="admin-section" ref={sectionRef}>
-          <div className="admin-section-head">
-            <div>
-              <h2>{editingId ? 'Edit Announcement' : 'Tambah Announcement'}</h2>
-              <p className="admin-copy">Form ini mengelola draft maupun announcement yang sudah published.</p>
+      {isFormOpen && (
+        <AdminRetroWindow
+          title={editingId ? 'Edit Announcement' : 'Tambah Announcement'}
+          onClose={closeFormModal}
+          wide
+          footer={
+            <div className="admin-inline-actions">
+              <button type="button" className="ghost-btn" onClick={closeFormModal} disabled={submitting}>
+                Cancel
+              </button>
+              <button type="submit" form="announcement-form" className="action-btn" disabled={submitting}>
+                {submitting ? 'Saving...' : editingId ? 'Update Announcement' : 'Create Announcement'}
+              </button>
             </div>
-          </div>
-
-          <form className="admin-form admin-form--materials" onSubmit={handleSubmit}>
+          }
+        >
+          <form id="announcement-form" className="admin-form admin-form--materials" onSubmit={handleSubmit}>
             <label className="admin-field admin-field--full">
               <span>Judul</span>
               <input
@@ -453,24 +468,20 @@ export default function AdminAnnouncementsPage() {
                 required
               />
             </label>
-
-            <div className="admin-actions admin-actions--split">
-              <div className="admin-copy">{editingId ? 'Mode edit aktif.' : 'Mode tambah aktif.'}</div>
-              <div className="admin-inline-actions">
-                {editingId && (
-                  <button type="button" className="ghost-btn" onClick={resetForm} disabled={submitting}>
-                    Cancel
-                  </button>
-                )}
-                <button type="submit" className="action-btn" disabled={submitting}>
-                  {submitting ? 'Saving...' : editingId ? 'Update Announcement' : 'Create Announcement'}
-                </button>
-              </div>
-            </div>
           </form>
-        </section>
-      </section>
+        </AdminRetroWindow>
+      )}
+
+      {pendingDelete && (
+        <AdminConfirmDialog
+          title="Hapus Announcement"
+          message={`Hapus "${pendingDelete.title}" dari daftar pengumuman?`}
+          onCancel={() => setPendingDelete(null)}
+          onConfirm={confirmDelete}
+          busy={submitting}
+          confirmLabel="Delete"
+        />
+      )}
     </main>
   )
 }
-

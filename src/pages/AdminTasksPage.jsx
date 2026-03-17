@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { AdminConfirmDialog, AdminRetroWindow } from '../components/AdminRetroWindow'
 import { useAdminAuth } from '../context/adminAuthStore'
 import useAsyncData from '../hooks/useAsyncData'
 import { createAdminRecord, deleteAdminRecord, fetchAdminCollection, updateAdminRecord } from '../lib/adminAuth'
@@ -42,6 +43,8 @@ export default function AdminTasksPage() {
   const [priorityFilter, setPriorityFilter] = useState('all')
   const [statusFilter, setStatusFilter] = useState('all')
   const [form, setForm] = useState(createEmptyForm)
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [pendingDelete, setPendingDelete] = useState(null)
   const [formError, setFormError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const fileInputRef = useRef(null)
@@ -127,6 +130,16 @@ export default function AdminTasksPage() {
     }
   }
 
+  function closeFormModal() {
+    resetForm()
+    setIsFormOpen(false)
+  }
+
+  function openCreateModal() {
+    resetForm()
+    setIsFormOpen(true)
+  }
+
   function startEditing(task) {
     setEditingId(task.id)
     setForm({
@@ -144,6 +157,8 @@ export default function AdminTasksPage() {
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
+
+    setIsFormOpen(true)
   }
 
   async function handleSubmit(event) {
@@ -178,7 +193,7 @@ export default function AdminTasksPage() {
         await createAdminRecord('tasks', auth.token, formData)
       }
 
-      resetForm()
+      closeFormModal()
       setRefreshSeed((value) => value + 1)
     } catch (submitError) {
       setFormError(submitError.message || 'Gagal menyimpan task')
@@ -187,8 +202,8 @@ export default function AdminTasksPage() {
     }
   }
 
-  async function handleDelete(taskId) {
-    if (!window.confirm('Hapus task ini?')) {
+  async function confirmDelete() {
+    if (!pendingDelete) {
       return
     }
 
@@ -196,12 +211,13 @@ export default function AdminTasksPage() {
     setFormError('')
 
     try {
-      await deleteAdminRecord('tasks', taskId, auth.token)
+      await deleteAdminRecord('tasks', pendingDelete.id, auth.token)
 
-      if (editingId === taskId) {
-        resetForm()
+      if (editingId === pendingDelete.id) {
+        closeFormModal()
       }
 
+      setPendingDelete(null)
       setRefreshSeed((value) => value + 1)
     } catch (deleteError) {
       setFormError(deleteError.message || 'Gagal menghapus task')
@@ -293,6 +309,9 @@ export default function AdminTasksPage() {
                 <option value="expired">Expired</option>
               </select>
             </label>
+            <button type="button" className="action-btn" onClick={openCreateModal}>
+              Tambah Task
+            </button>
           </div>
 
           <p className="list-summary">Menampilkan {filteredTasks.length} dari {data.tasks.length} tasks.</p>
@@ -338,7 +357,7 @@ export default function AdminTasksPage() {
                                 View
                               </a>
                             ) : null}
-                            <button type="button" className="ghost-btn" onClick={() => handleDelete(task.id)}>
+                            <button type="button" className="ghost-btn" onClick={() => setPendingDelete(task)}>
                               Delete
                             </button>
                           </div>
@@ -368,7 +387,7 @@ export default function AdminTasksPage() {
                           View
                         </a>
                       ) : null}
-                      <button type="button" className="ghost-btn" onClick={() => handleDelete(task.id)}>
+                      <button type="button" className="ghost-btn" onClick={() => setPendingDelete(task)}>
                         Delete
                       </button>
                     </div>
@@ -380,16 +399,25 @@ export default function AdminTasksPage() {
             <p className="empty-state">Belum ada task yang cocok dengan filter.</p>
           )}
         </section>
+      </section>
 
-        <section className="admin-section">
-          <div className="admin-section-head">
-            <div>
-              <h2>{editingId ? 'Edit Task' : 'Tambah Task'}</h2>
-              <p className="admin-copy">Tasks di admin diperlakukan sebagai deadline board dengan status turunan dari due date.</p>
+      {isFormOpen && (
+        <AdminRetroWindow
+          title={editingId ? 'Edit Task' : 'Tambah Task'}
+          onClose={closeFormModal}
+          wide
+          footer={
+            <div className="admin-inline-actions">
+              <button type="button" className="ghost-btn" onClick={closeFormModal} disabled={submitting}>
+                Cancel
+              </button>
+              <button type="submit" form="task-form" className="action-btn" disabled={submitting}>
+                {submitting ? 'Saving...' : editingId ? 'Update Task' : 'Create Task'}
+              </button>
             </div>
-          </div>
-
-          <form className="admin-form admin-form--materials" onSubmit={handleSubmit}>
+          }
+        >
+          <form id="task-form" className="admin-form admin-form--materials" onSubmit={handleSubmit}>
             <label className="admin-field admin-field--full">
               <span>Judul</span>
               <input
@@ -487,24 +515,20 @@ export default function AdminTasksPage() {
                 }
               />
             </label>
-
-            <div className="admin-actions admin-actions--split">
-              <div className="admin-copy">{editingId ? 'Mode edit aktif.' : 'Mode tambah aktif.'}</div>
-              <div className="admin-inline-actions">
-                {editingId && (
-                  <button type="button" className="ghost-btn" onClick={resetForm} disabled={submitting}>
-                    Cancel
-                  </button>
-                )}
-                <button type="submit" className="action-btn" disabled={submitting}>
-                  {submitting ? 'Saving...' : editingId ? 'Update Task' : 'Create Task'}
-                </button>
-              </div>
-            </div>
           </form>
-        </section>
-      </section>
+        </AdminRetroWindow>
+      )}
+
+      {pendingDelete && (
+        <AdminConfirmDialog
+          title="Hapus Task"
+          message={`Hapus "${pendingDelete.title}" dari daftar task?`}
+          onCancel={() => setPendingDelete(null)}
+          onConfirm={confirmDelete}
+          busy={submitting}
+          confirmLabel="Delete"
+        />
+      )}
     </main>
   )
 }
-

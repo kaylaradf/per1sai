@@ -2,6 +2,17 @@ import { fetchAdminCollection } from './adminAuth'
 import { getFileUrl } from './pocketbase'
 
 const weekdayLabels = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
+export const scheduleTimeSlots = [
+  { endTime: '08:20', key: '07:30-08:20', label: '07:30 - 08:20', startTime: '07:30', type: 'class' },
+  { endTime: '09:10', key: '08:20-09:10', label: '08:20 - 09:10', startTime: '08:20', type: 'class' },
+  { endTime: '10:15', key: '09:25-10:15', label: '09:25 - 10:15', startTime: '09:25', type: 'class' },
+  { endTime: '11:10', key: '10:20-11:10', label: '10:20 - 11:10', startTime: '10:20', type: 'class' },
+  { endTime: '12:05', key: '11:15-12:05', label: '11:15 - 12:05', startTime: '11:15', type: 'class' },
+  { endTime: '13:00', key: '12:05-13:00', label: '12:05 - 13:00', startTime: '12:05', type: 'break' },
+  { endTime: '13:50', key: '13:00-13:50', label: '13:00 - 13:50', startTime: '13:00', type: 'class' },
+  { endTime: '14:40', key: '13:50-14:40', label: '13:50 - 14:40', startTime: '13:50', type: 'class' },
+  { endTime: '15:30', key: '14:40-15:30', label: '14:40 - 15:30', startTime: '14:40', type: 'class' },
+]
 
 export function formatAdminDateLabel(value, includeTime = false) {
   if (!value) {
@@ -100,6 +111,14 @@ export function getScheduleColumns(entries) {
   }))
 }
 
+export function getScheduleSlotOptions() {
+  return scheduleTimeSlots.filter((slot) => slot.type === 'class')
+}
+
+export function findScheduleSlot(startTime, endTime) {
+  return scheduleTimeSlots.find((slot) => slot.startTime === startTime && slot.endTime === endTime) || null
+}
+
 export function groupScheduleIntoGrid(entries) {
   const sortedEntries = [...entries].sort((left, right) => {
     if (left.startTime !== right.startTime) {
@@ -114,27 +133,29 @@ export function groupScheduleIntoGrid(entries) {
   })
 
   const columns = getScheduleColumns(sortedEntries)
-  const rowMap = new Map()
+  const rows = scheduleTimeSlots.map((slot) => ({
+    ...slot,
+    cells: Object.fromEntries(columns.map((column) => [column.dayIndex, []])),
+  }))
+  const rowLookup = new Map(rows.map((row) => [row.key, row]))
 
   sortedEntries.forEach((entry) => {
     const rowKey = `${entry.startTime}-${entry.endTime}`
 
-    if (!rowMap.has(rowKey)) {
-      rowMap.set(rowKey, {
+    if (!rowLookup.has(rowKey)) {
+      const customRow = {
         endTime: entry.endTime,
         key: rowKey,
         label: `${entry.startTime} - ${entry.endTime}`,
         startTime: entry.startTime,
-      })
+        type: 'custom',
+        cells: Object.fromEntries(columns.map((column) => [column.dayIndex, []])),
+      }
+
+      rows.push(customRow)
+      rowLookup.set(rowKey, customRow)
     }
   })
-
-  const rows = Array.from(rowMap.values()).map((row) => ({
-    ...row,
-    cells: Object.fromEntries(columns.map((column) => [column.dayIndex, []])),
-  }))
-
-  const rowLookup = new Map(rows.map((row) => [row.key, row]))
 
   sortedEntries.forEach((entry) => {
     const row = rowLookup.get(`${entry.startTime}-${entry.endTime}`)
@@ -209,4 +230,3 @@ export function getAdminFileUrl(record, fieldName) {
 
   return getFileUrl(record, fileName)
 }
-
