@@ -42,7 +42,7 @@ export default function AdminLoginPage() {
         {!hasPocketBaseConfigured && (
           <p className="empty-state">`VITE_POCKETBASE_URL` belum di-set, jadi mode admin tidak bisa dipakai.</p>
         )}
-        <form className="admin-form" onSubmit={handleSubmit}>
+        <form className="admin-form" onSubmit={handleSubmit} autoComplete="off">
           <label className="toolbar-field">
             <span>Email Admin</span>
             <input
@@ -50,7 +50,7 @@ export default function AdminLoginPage() {
               type="email"
               value={identity}
               onChange={(event) => setIdentity(event.target.value)}
-              autoComplete="username"
+              autoComplete="off"
               required
             />
           </label>
@@ -61,7 +61,7 @@ export default function AdminLoginPage() {
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              autoComplete="current-password"
+              autoComplete="off"
               required
             />
           </label>
